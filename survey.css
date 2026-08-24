@@ -137,6 +137,24 @@ fieldset label:has(input[type='radio']:checked) {
   margin-bottom: 24px;
 }
 
+/* Give the administrative header at the top of each sheet enough white space
+   to read as a deliberate form header rather than a compressed block. */
+.sheet-front:not(.completion-sheet) {
+  padding-top: 68px !important;
+}
+
+.sheet-front > .form-code {
+  margin-bottom: 18px;
+}
+
+.sheet-front > .question-number {
+  margin-bottom: 18px;
+}
+
+.sheet-front > h2 {
+  margin-bottom: 22px;
+}
+
 /* Reserve a real footer zone on every questionnaire sheet. The folio is
    centered in that zone and navigation remains above it, so a long answer set
    cannot put a button on top of the sheet number. */
@@ -174,6 +192,19 @@ fieldset label:has(input[type='radio']:checked) {
 
   .long-form textarea {
     min-height: 118px;
+  }
+
+  .sheet-front:not(.completion-sheet) {
+    padding-top: 46px !important;
+  }
+
+  .sheet-front > .form-code,
+  .sheet-front > .question-number {
+    margin-bottom: 14px;
+  }
+
+  .sheet-front > h2 {
+    margin-bottom: 18px;
   }
 
   .sheet-front {
