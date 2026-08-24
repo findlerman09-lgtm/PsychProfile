@@ -3,12 +3,52 @@
 
   const book = document.getElementById('survey-book');
   const fileNumber = document.getElementById('file-number');
-  const subjectInput = document.getElementById('subject-name');
+  const subjectLine = document.querySelector('.subject-line');
+  const completionSheet = book?.querySelector('[data-page="14"] .completion-sheet');
+  const restartButton = document.getElementById('restart-button');
+
+  if (!book || !completionSheet) return;
+
+  /* Keep identification inside the existing case-file furniture rather than
+     adding a new survey question. It is optional; the file number remains a
+     usable fallback identifier. */
+  let subjectInput = document.getElementById('subject-name');
+  if (!subjectInput && subjectLine) {
+    subjectLine.textContent = '';
+    subjectInput = document.createElement('input');
+    subjectInput.type = 'text';
+    subjectInput.id = 'subject-name';
+    subjectInput.name = 'subject_name';
+    subjectInput.className = 'subject-input';
+    subjectInput.maxLength = 80;
+    subjectInput.autocomplete = 'name';
+    subjectInput.placeholder = 'name or initials';
+    subjectInput.setAttribute('aria-label', 'Subject name or initials');
+    subjectLine.appendChild(subjectInput);
+  }
+
+  let exportPanel = document.getElementById('export-panel');
+  if (!exportPanel) {
+    exportPanel = document.createElement('div');
+    exportPanel.id = 'export-panel';
+    exportPanel.className = 'export-panel';
+    exportPanel.innerHTML = `
+      <p class="export-note">Prepare a copy of this examination record for review.</p>
+      <div class="export-actions">
+        <button class="secondary" type="button" id="copy-record-button">Copy Record</button>
+        <button class="primary" type="button" id="download-record-button">Download Record</button>
+      </div>
+      <p class="export-status" id="export-status" aria-live="polite"></p>`;
+
+    const existingActions = completionSheet.querySelector('.sheet-actions');
+    completionSheet.insertBefore(exportPanel, existingActions || null);
+  }
+
   const copyButton = document.getElementById('copy-record-button');
   const downloadButton = document.getElementById('download-record-button');
   const exportStatus = document.getElementById('export-status');
 
-  if (!book || !copyButton || !downloadButton) return;
+  if (!copyButton || !downloadButton) return;
 
   function cleanText(value) {
     return String(value || '')
@@ -70,7 +110,8 @@
 
   function buildRecord() {
     const subject = cleanText(subjectInput?.value) || 'Unspecified';
-    const file = `P-${cleanText(fileNumber?.textContent) || 'UNNUMBERED'}`;
+    const number = cleanText(fileNumber?.textContent) || 'UNNUMBERED';
+    const file = number.startsWith('P-') ? number : `P-${number}`;
     const completed = new Date().toISOString();
 
     const sections = Array.from(book.querySelectorAll('.sheet'))
@@ -152,4 +193,11 @@
 
   copyButton.addEventListener('click', copyRecord);
   downloadButton.addEventListener('click', downloadRecord);
+
+  if (restartButton) {
+    restartButton.addEventListener('click', () => {
+      if (subjectInput) subjectInput.value = '';
+      setStatus('');
+    });
+  }
 })();
