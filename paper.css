@@ -1,0 +1,249 @@
+/* Paper-motion prototype overrides.
+   The sheet rolls upward from the bottom edge rather than rotating like a rigid card. */
+
+.sheet {
+  transform: none !important;
+  transform-style: flat !important;
+  filter: none !important;
+  overflow: visible;
+  transition: none !important;
+}
+
+.sheet.current,
+.sheet.next,
+.sheet.turned,
+.sheet.returning {
+  transform: none !important;
+  filter: none !important;
+}
+
+/* The actual reverse of the paper is deliberately plain. It is not a mirrored
+   copy of the front and carries no printed mark. */
+.sheet-back {
+  display: none !important;
+  background:
+    repeating-linear-gradient(0deg, rgba(66,53,34,.012) 0 1px, transparent 1px 5px),
+    #e3d7b9;
+}
+
+.sheet-front {
+  backface-visibility: visible !important;
+  transform: none;
+  will-change: clip-path, transform, filter;
+}
+
+/* A moving curled lip: light on the exposed underside, dark where the paper
+   bends back over itself, with a soft cast shadow beneath the roll. */
+.sheet::after {
+  content: '';
+  position: absolute;
+  z-index: 30;
+  left: -1.2%;
+  width: 102.4%;
+  height: 82px;
+  top: calc(100% - 34px);
+  opacity: 0;
+  pointer-events: none;
+  border-radius: 48% 48% 42% 42% / 68% 68% 32% 32%;
+  background:
+    linear-gradient(to bottom,
+      rgba(74,57,34,.30) 0%,
+      rgba(198,183,145,.72) 12%,
+      rgba(239,229,199,.98) 42%,
+      rgba(214,199,160,.98) 68%,
+      rgba(111,88,52,.34) 100%);
+  box-shadow:
+    0 15px 20px rgba(37,27,16,.24),
+    0 -5px 9px rgba(255,249,225,.28),
+    inset 0 10px 14px rgba(255,249,225,.24),
+    inset 0 -10px 14px rgba(74,57,34,.22);
+  transform-origin: center center;
+  transform: perspective(420px) rotateX(-58deg) scaleY(.66);
+}
+
+/* The front is progressively hidden from the bottom upward while the curled
+   lip travels toward the top. The slight compression near the moving edge is
+   what keeps it from reading as a rigid cardboard panel. */
+.sheet.turned .sheet-front {
+  animation: paper-roll-up 900ms cubic-bezier(.62,.02,.29,1) both;
+}
+
+.sheet.turned::after {
+  animation: curl-travel-up 900ms cubic-bezier(.62,.02,.29,1) both;
+}
+
+/* Returning to a previous sheet unrolls it downward over the sheet beneath. */
+.sheet.returning .sheet-front {
+  animation: paper-roll-down 900ms cubic-bezier(.62,.02,.29,1) both;
+}
+
+.sheet.returning::after {
+  animation: curl-travel-down 900ms cubic-bezier(.62,.02,.29,1) both;
+}
+
+@keyframes paper-roll-up {
+  0% {
+    clip-path: inset(0 0 0 0);
+    transform: translateY(0) scaleY(1);
+    filter: brightness(1);
+  }
+  18% {
+    clip-path: inset(0 0 8% 0);
+    transform: translateY(-2px) scaleY(.998);
+    filter: brightness(.995);
+  }
+  45% {
+    clip-path: inset(0 0 39% 0);
+    transform: translateY(-7px) scaleY(.991);
+    filter: brightness(.985);
+  }
+  72% {
+    clip-path: inset(0 0 73% 0);
+    transform: translateY(-13px) scaleY(.982);
+    filter: brightness(.97);
+  }
+  92% {
+    clip-path: inset(0 0 96% 0);
+    transform: translateY(-18px) scaleY(.974);
+    filter: brightness(.96);
+  }
+  100% {
+    clip-path: inset(0 0 100% 0);
+    transform: translateY(-20px) scaleY(.97);
+    filter: brightness(.95);
+  }
+}
+
+@keyframes paper-roll-down {
+  0% {
+    clip-path: inset(0 0 100% 0);
+    transform: translateY(-20px) scaleY(.97);
+    filter: brightness(.95);
+  }
+  15% {
+    clip-path: inset(0 0 92% 0);
+    transform: translateY(-17px) scaleY(.976);
+    filter: brightness(.965);
+  }
+  48% {
+    clip-path: inset(0 0 52% 0);
+    transform: translateY(-9px) scaleY(.988);
+    filter: brightness(.985);
+  }
+  78% {
+    clip-path: inset(0 0 14% 0);
+    transform: translateY(-3px) scaleY(.997);
+    filter: brightness(.997);
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
+    transform: translateY(0) scaleY(1);
+    filter: brightness(1);
+  }
+}
+
+@keyframes curl-travel-up {
+  0% {
+    top: calc(100% - 34px);
+    opacity: 0;
+    transform: perspective(420px) rotateX(-42deg) scaleY(.35);
+  }
+  8% {
+    opacity: .93;
+  }
+  24% {
+    top: 79%;
+    opacity: 1;
+    transform: perspective(420px) rotateX(-61deg) scaleY(.70);
+  }
+  50% {
+    top: 47%;
+    opacity: 1;
+    transform: perspective(420px) rotateX(-67deg) scaleY(.77);
+  }
+  76% {
+    top: 17%;
+    opacity: .96;
+    transform: perspective(420px) rotateX(-59deg) scaleY(.66);
+  }
+  94% {
+    top: -35px;
+    opacity: .7;
+    transform: perspective(420px) rotateX(-46deg) scaleY(.43);
+  }
+  100% {
+    top: -70px;
+    opacity: 0;
+    transform: perspective(420px) rotateX(-38deg) scaleY(.28);
+  }
+}
+
+@keyframes curl-travel-down {
+  0% {
+    top: -70px;
+    opacity: 0;
+    transform: perspective(420px) rotateX(-38deg) scaleY(.28);
+  }
+  8% {
+    top: -35px;
+    opacity: .72;
+    transform: perspective(420px) rotateX(-46deg) scaleY(.43);
+  }
+  28% {
+    top: 17%;
+    opacity: .96;
+    transform: perspective(420px) rotateX(-59deg) scaleY(.66);
+  }
+  54% {
+    top: 47%;
+    opacity: 1;
+    transform: perspective(420px) rotateX(-67deg) scaleY(.77);
+  }
+  80% {
+    top: 79%;
+    opacity: 1;
+    transform: perspective(420px) rotateX(-61deg) scaleY(.70);
+  }
+  94% {
+    opacity: .88;
+  }
+  100% {
+    top: calc(100% - 34px);
+    opacity: 0;
+    transform: perspective(420px) rotateX(-42deg) scaleY(.35);
+  }
+}
+
+/* While a sheet is fully rolled away, nothing from its printed face remains
+   visible. The next sheet is therefore the only readable surface. */
+.sheet.turned {
+  pointer-events: none;
+}
+
+@media (max-width: 760px) {
+  .sheet::after {
+    height: 64px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sheet.turned .sheet-front {
+    animation: none !important;
+    clip-path: inset(0 0 100% 0);
+    transform: none !important;
+    filter: none !important;
+  }
+
+  .sheet.returning .sheet-front,
+  .sheet.current .sheet-front,
+  .sheet.next .sheet-front {
+    animation: none !important;
+    clip-path: inset(0 0 0 0);
+    transform: none !important;
+    filter: none !important;
+  }
+
+  .sheet::after {
+    display: none !important;
+  }
+}
