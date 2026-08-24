@@ -44,6 +44,9 @@ The following are **FICTIONAL INSERTIONS** unless later research establishes an 
 - `Preliminary Personal Examination`
 - examiner instructions shown in the prototype
 - `CONFIDENTIAL`, `UNASSESSED`, `IN EXAMINATION`, and similar workflow stamps/statuses as presented by the site
+- the assessment-domain and classification language (`CIVIC`, `EXPEDITIONARY`, `COVERT`, `TECHNICAL`, `PROTECTIVE`, `IRREGULAR`, and related page codes)
+
+The assessment-domain language is deliberate **genre misdirection**. It is intended to keep the eventual game identity ambiguous by plausibly suggesting several kinds of adventure or role-playing campaign without naming any specific game system. It does not represent a historical City of London Lunatic Asylum classification scheme and must not be cited or presented as authentic institutional practice.
 
 The former prototype name `The Institute for Personal Observation` was fictional and has been retired from player-facing use.
 
