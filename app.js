@@ -149,11 +149,11 @@
     const eased = easeInOutCubic(p);
     const baseAngle = PARK_ANGLE * eased;
 
-    /* The top third behaves almost like one hinged sheet. The broad curl lives
-       in the lower two-thirds, peaks mid-turn, and remains only slightly bent
-       when parked. */
-    const movingCurl = Math.sin(Math.PI * p) * 34;
-    const parkedCurl = eased * 9;
+    /* The upper portion still behaves like one hinged sheet. The loose lower
+       half now bends a little more strongly, while retaining a modest curl in
+       the parked state. */
+    const movingCurl = Math.sin(Math.PI * p) * 42;
+    const parkedCurl = eased * 13;
     const curlAmount = movingCurl + parkedCurl;
 
     let y = 0;
@@ -161,8 +161,8 @@
 
     overlay._strips.forEach((strip, index) => {
       const t = index / Math.max(1, STRIP_COUNT - 1);
-      const flexiblePart = Math.max(0, (t - 0.34) / 0.66);
-      const bend = curlAmount * Math.pow(flexiblePart, 1.55);
+      const flexiblePart = Math.max(0, (t - 0.30) / 0.70);
+      const bend = curlAmount * Math.pow(flexiblePart, 1.45);
       const angle = baseAngle + bend;
 
       strip.style.transform = `translate3d(0, ${y.toFixed(2)}px, ${z.toFixed(2)}px) rotateX(${angle.toFixed(2)}deg)`;
