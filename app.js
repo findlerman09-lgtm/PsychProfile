@@ -11,8 +11,13 @@
   const fileNumber = document.getElementById('file-number');
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
+  const STRIP_COUNT = 12;
+  const TURN_DURATION = 1280;
+  const PARK_ANGLE = 138;
+
   let currentPage = 0;
   let animating = false;
+  let parkedOverlay = null;
 
   const roman = ['I', 'II', 'III', 'IV'];
 
@@ -45,7 +50,7 @@
     sheets.forEach((sheet, index) => {
       const isCurrent = index === currentPage;
       sheet.setAttribute('aria-hidden', isCurrent ? 'false' : 'true');
-      sheet.querySelectorAll('input, button').forEach(control => {
+      sheet.querySelectorAll('input, button, textarea, select').forEach(control => {
         if (isCurrent) {
           control.removeAttribute('tabindex');
         } else {
@@ -55,19 +60,15 @@
     });
   }
 
-  /* Only the immediately previous page remains visibly propped up. Older
-     sheets are considered folded back behind it and are hidden from view. */
   function settleSheets() {
     sheets.forEach((sheet, index) => {
       sheet.classList.remove(
-        'turned', 'current', 'next', 'returning', 'parked', 'stored',
-        'turning-forward', 'turning-back'
+        'turned', 'returning', 'parked', 'turning-forward', 'turning-back',
+        'current', 'next', 'stored'
       );
 
-      if (index < currentPage - 1) {
+      if (index < currentPage) {
         sheet.classList.add('stored');
-      } else if (index === currentPage - 1) {
-        sheet.classList.add('parked');
       } else if (index === currentPage) {
         sheet.classList.add('current');
       } else {
@@ -76,36 +77,161 @@
     });
   }
 
-  function transitionDelay(callback) {
+  function syncControlAppearance(original, clone) {
+    const sourceControls = original.querySelectorAll('input, textarea, select');
+    const cloneControls = clone.querySelectorAll('input, textarea, select');
+
+    sourceControls.forEach((sourceControl, index) => {
+      const cloneControl = cloneControls[index];
+      if (!cloneControl) return;
+
+      if ('checked' in sourceControl) cloneControl.checked = sourceControl.checked;
+      if ('value' in sourceControl) cloneControl.value = sourceControl.value;
+    });
+  }
+
+  function removeDuplicateIds(root) {
+    if (root.id) root.removeAttribute('id');
+    root.querySelectorAll('[id]').forEach(node => node.removeAttribute('id'));
+  }
+
+  function createFlipOverlay(sourceSheet) {
+    const sourceFace = sourceSheet.querySelector('.sheet-front');
+    const pageHeight = sourceSheet.offsetHeight;
+    const sliceHeight = pageHeight / STRIP_COUNT;
+
+    const overlay = document.createElement('div');
+    overlay.className = 'flip-overlay';
+    overlay.setAttribute('aria-hidden', 'true');
+    overlay.style.height = `${pageHeight}px`;
+    overlay.dataset.sourcePage = sourceSheet.dataset.page || '';
+
+    const strips = [];
+
+    for (let i = 0; i < STRIP_COUNT; i += 1) {
+      const strip = document.createElement('div');
+      strip.className = 'flip-strip';
+      strip.style.setProperty('--slice-height', `${sliceHeight + 1.5}px`);
+      strip.style.setProperty('--slice-top', `${i * sliceHeight}px`);
+      strip.style.setProperty('--page-height', `${pageHeight}px`);
+
+      const front = document.createElement('div');
+      front.className = 'flip-strip-face flip-strip-front';
+
+      const clonedFace = sourceFace.cloneNode(true);
+      clonedFace.classList.add('flip-full-face');
+      removeDuplicateIds(clonedFace);
+      syncControlAppearance(sourceFace, clonedFace);
+      front.appendChild(clonedFace);
+
+      const back = document.createElement('div');
+      back.className = 'flip-strip-face flip-strip-back';
+
+      strip.append(front, back);
+      overlay.appendChild(strip);
+      strips.push(strip);
+    }
+
+    overlay._strips = strips;
+    overlay._sliceHeight = sliceHeight;
+    book.appendChild(overlay);
+    return overlay;
+  }
+
+  function easeInOutCubic(t) {
+    return t < 0.5
+      ? 4 * t * t * t
+      : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  }
+
+  function renderFlip(overlay, progress) {
+    const p = Math.max(0, Math.min(1, progress));
+    const eased = easeInOutCubic(p);
+    const baseAngle = PARK_ANGLE * eased;
+
+    /* The top third behaves almost like one hinged sheet. The broad curl lives
+       in the lower two-thirds, peaks mid-turn, and remains only slightly bent
+       when parked. */
+    const movingCurl = Math.sin(Math.PI * p) * 34;
+    const parkedCurl = eased * 9;
+    const curlAmount = movingCurl + parkedCurl;
+
+    let y = 0;
+    let z = 0;
+
+    overlay._strips.forEach((strip, index) => {
+      const t = index / Math.max(1, STRIP_COUNT - 1);
+      const flexiblePart = Math.max(0, (t - 0.34) / 0.66);
+      const bend = curlAmount * Math.pow(flexiblePart, 1.55);
+      const angle = baseAngle + bend;
+
+      strip.style.transform = `translate3d(0, ${y.toFixed(2)}px, ${z.toFixed(2)}px) rotateX(${angle.toFixed(2)}deg)`;
+
+      const radians = angle * Math.PI / 180;
+      y += overlay._sliceHeight * Math.cos(radians);
+      z += overlay._sliceHeight * Math.sin(radians);
+    });
+
+    overlay.classList.toggle('parked', p > 0.995);
+  }
+
+  function animateFlip(overlay, from, to, onComplete) {
     if (reduceMotion.matches) {
-      requestAnimationFrame(callback);
+      renderFlip(overlay, to);
+      requestAnimationFrame(onComplete);
       return;
     }
-    window.setTimeout(callback, 1180);
+
+    const start = performance.now();
+
+    function frame(now) {
+      const elapsed = now - start;
+      const local = Math.min(1, elapsed / TURN_DURATION);
+      const progress = from + (to - from) * local;
+      renderFlip(overlay, progress);
+
+      if (local < 1) {
+        requestAnimationFrame(frame);
+      } else {
+        onComplete();
+      }
+    }
+
+    requestAnimationFrame(frame);
+  }
+
+  function removeParkedOverlay() {
+    if (!parkedOverlay) return;
+    parkedOverlay.remove();
+    parkedOverlay = null;
+  }
+
+  function createStaticPreviousPage() {
+    removeParkedOverlay();
+    if (currentPage <= 0) return;
+
+    parkedOverlay = createFlipOverlay(sheets[currentPage - 1]);
+    renderFlip(parkedOverlay, 1);
   }
 
   function turnForward() {
     if (animating || currentPage >= sheets.length - 1) return;
 
     const leaving = sheets[currentPage];
-    const arriving = sheets[currentPage + 1];
     animating = true;
 
-    /* The next sheet is already lying flat beneath. Lift the entire outgoing
-       sheet from its bound top edge, then leave it propped above the new page. */
-    arriving.classList.remove('next', 'stored', 'parked', 'turning-back');
-    arriving.classList.add('current');
-    arriving.setAttribute('aria-hidden', 'false');
-
-    leaving.classList.remove('current', 'parked', 'stored', 'turning-back');
-    leaving.classList.add('turning-forward');
+    removeParkedOverlay();
+    const overlay = createFlipOverlay(leaving);
+    renderFlip(overlay, 0);
 
     currentPage += 1;
+    settleSheets();
+    setAriaState();
     updateChrome();
 
-    transitionDelay(() => {
-      settleSheets();
-      setAriaState();
+    animateFlip(overlay, 0, 1, () => {
+      parkedOverlay = overlay;
+      renderFlip(parkedOverlay, 1);
       focusSheet(currentPage);
       animating = false;
     });
@@ -114,24 +240,22 @@
   function turnBackward() {
     if (animating || currentPage <= 0) return;
 
-    const leaving = sheets[currentPage];
-    const arriving = sheets[currentPage - 1];
     animating = true;
 
-    leaving.classList.remove('current');
-    leaving.classList.add('next');
+    let overlay = parkedOverlay;
+    if (!overlay) {
+      overlay = createFlipOverlay(sheets[currentPage - 1]);
+      renderFlip(overlay, 1);
+    }
+    parkedOverlay = null;
 
-    /* Lower the whole propped page back down onto the pad. */
-    arriving.classList.remove('parked', 'stored', 'current', 'next');
-    arriving.classList.add('turning-back');
-    arriving.setAttribute('aria-hidden', 'false');
-
-    currentPage -= 1;
-    updateChrome();
-
-    transitionDelay(() => {
+    animateFlip(overlay, 1, 0, () => {
+      overlay.remove();
+      currentPage -= 1;
       settleSheets();
       setAriaState();
+      updateChrome();
+      createStaticPreviousPage();
       focusSheet(currentPage);
       animating = false;
     });
@@ -176,9 +300,7 @@
 
         if (checked.length > max) {
           input.checked = false;
-          if (validation) {
-            validation.textContent = `Please choose no more than ${max} responses.`;
-          }
+          if (validation) validation.textContent = `Please choose no more than ${max} responses.`;
           return;
         }
 
@@ -205,6 +327,8 @@
 
   restartButton.addEventListener('click', () => {
     if (animating) return;
+
+    removeParkedOverlay();
     document.querySelectorAll('input[type="checkbox"]').forEach(input => {
       input.checked = false;
     });
