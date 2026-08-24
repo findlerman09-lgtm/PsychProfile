@@ -10,6 +10,18 @@ button, input, textarea, select { font: inherit; }
   display: none !important;
 }
 
+/* Future sheets are not part of the visible stack. The paper-stack element and
+   temporary flip overlay already provide that illusion. Hiding .next sheets
+   prevents long future pages from overflowing below the active sheet as ghost
+   controls or text. */
+.sheet.next {
+  visibility: hidden !important;
+}
+
+.sheet.current {
+  visibility: visible !important;
+}
+
 input[type='radio'] {
   width: 20px;
   height: 20px;
