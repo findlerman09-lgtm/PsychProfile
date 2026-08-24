@@ -1,368 +1,235 @@
 /* Paper-motion prototype overrides.
-   Goal: a broad, flexible page curl rather than a rigid flip or tight scroll. */
+   Physical model: a legal-pad sheet lifts as one page, flexes slightly at the
+   free edge, and remains partly flipped above the active sheet. */
 
 :root {
   --paper-turn-duration: 1120ms;
+  --park-angle: 116deg;
 }
 
-/* Keep the moving paper beneath the institutional header/meta so a flipped
-   sheet can sit above the current page without covering the file furniture. */
+/* Let a lifted sheet rise above the current page and over the surrounding file
+   furniture, the way a real page would when propped up from a pad on a table. */
 .book-wrap {
-  z-index: 1 !important;
+  z-index: 7 !important;
   overflow: visible;
-}
-
-.institution-header,
-.file-meta {
-  z-index: 4 !important;
+  perspective: 2100px !important;
+  perspective-origin: 50% 12% !important;
+  transform-style: preserve-3d;
 }
 
 .sheet {
-  transform: none !important;
-  transform-style: flat !important;
-  filter: none !important;
+  transform-origin: top center !important;
+  transform-style: preserve-3d !important;
   overflow: visible;
   transition: none !important;
+  will-change: transform, filter;
 }
 
-.sheet.current,
-.sheet.next,
-.sheet.turned,
-.sheet.returning {
-  transform: none !important;
-  filter: none !important;
-}
-
-/* The reverse is actual blank paper. It is only exposed when a sheet has
-   finished curling over or while that sheet is being uncurled. */
-.sheet-back {
-  display: none !important;
-  background:
-    radial-gradient(ellipse at 48% 18%, rgba(255,255,255,.12), transparent 34%),
-    repeating-linear-gradient(0deg, rgba(66,53,34,.012) 0 1px, transparent 1px 5px),
-    #e3d7b9 !important;
+/* Every sheet has two real opaque faces. The printed face is on the front;
+   the reverse is deliberately blank aged paper. */
+.sheet-face {
+  backface-visibility: hidden !important;
+  -webkit-backface-visibility: hidden !important;
 }
 
 .sheet-front {
-  backface-visibility: visible !important;
-  transform: none;
-  will-change: clip-path, transform, filter;
+  transform: rotateX(0deg) !important;
+  opacity: 1 !important;
 }
 
-/* Once a page has turned, leave the nearest previous sheet visibly resting
-   above the active sheet. Only the plain reverse is shown. */
-.sheet.parked {
-  z-index: 6 !important;
-  pointer-events: none;
-}
-
-.sheet.parked .sheet-front {
-  clip-path: inset(0 0 100% 0) !important;
-  opacity: 0;
-}
-
-.sheet.parked .sheet-back {
+.sheet-back {
   display: block !important;
-  position: absolute;
-  left: .7%;
-  right: .7%;
-  top: -118px;
-  bottom: auto;
-  height: 132px;
-  opacity: 1;
-  transform: perspective(1100px) rotateX(-8deg) scaleX(.992);
-  transform-origin: bottom center;
-  border: 1px solid rgba(111,94,67,.62);
-  border-bottom-color: rgba(78,63,42,.78);
-  box-shadow:
-    0 10px 14px rgba(40,29,17,.14),
-    inset 0 -14px 22px rgba(87,67,38,.10),
-    inset 0 7px 16px rgba(255,249,226,.11);
-}
-
-/* A broad underside curl. The large height is deliberate: it should look like
-   a flexible sheet being rolled over itself, not wound around a pencil. */
-.sheet::after {
-  content: '';
-  position: absolute;
-  z-index: 32;
-  left: -2.4%;
-  width: 104.8%;
-  height: 248px;
-  top: calc(100% - 128px);
-  opacity: 0;
-  pointer-events: none;
-  border-radius: 49% 49% 38% 38% / 58% 58% 42% 42%;
+  opacity: 1 !important;
+  transform: rotateX(180deg) !important;
   background:
-    linear-gradient(to bottom,
-      rgba(71,53,31,.22) 0%,
-      rgba(155,135,98,.44) 10%,
-      rgba(228,216,182,.88) 28%,
-      rgba(242,233,204,.99) 48%,
-      rgba(225,211,176,.98) 66%,
-      rgba(164,140,99,.58) 84%,
-      rgba(72,54,31,.20) 100%);
+    radial-gradient(ellipse at 46% 20%, rgba(255,255,255,.16), transparent 35%),
+    repeating-linear-gradient(0deg, rgba(66,53,34,.014) 0 1px, transparent 1px 5px),
+    linear-gradient(94deg, rgba(105,82,48,.045), transparent 16%, rgba(255,255,255,.035) 82%, rgba(87,67,38,.045)),
+    #e3d7b9 !important;
+  border-color: #877a60 !important;
   box-shadow:
-    0 34px 42px rgba(37,27,16,.20),
-    0 -10px 18px rgba(255,249,225,.20),
-    inset 0 24px 28px rgba(255,249,225,.18),
-    inset 0 -25px 34px rgba(74,57,34,.16);
-  transform-origin: center center;
-  transform: perspective(950px) rotateX(-26deg) scaleY(.78);
+    inset 0 0 72px rgba(111,85,47,.075),
+    inset 0 -24px 34px rgba(94,72,42,.06) !important;
 }
 
-/* A separate soft cast shadow makes the bend feel broad instead of cylindrical. */
-.sheet::before {
+/* No duplicated printing or stamps on the reverse. */
+.reverse-mark {
+  display: none !important;
+}
+
+/* A broad darkening along the free edge of the back suggests a small amount of
+   paper bow without making the sheet behave like a rigid slab. */
+.sheet-back::after {
   content: '';
   position: absolute;
-  z-index: 31;
-  left: 4%;
-  width: 92%;
-  height: 118px;
-  top: calc(100% - 52px);
-  opacity: 0;
+  left: 1.5%;
+  right: 1.5%;
+  bottom: -1px;
+  height: 92px;
   pointer-events: none;
-  border-radius: 50%;
-  background: radial-gradient(ellipse at center, rgba(41,29,16,.34), rgba(41,29,16,.13) 48%, transparent 72%);
-  filter: blur(13px);
+  border-radius: 0 0 48% 48% / 0 0 18% 18%;
+  background:
+    linear-gradient(to top,
+      rgba(80,60,34,.20) 0%,
+      rgba(173,151,110,.10) 22%,
+      rgba(247,238,209,.10) 55%,
+      transparent 100%);
+  box-shadow: inset 0 -8px 12px rgba(75,55,31,.08);
 }
 
-.sheet.turned:not(.parked) {
-  z-index: 20 !important;
+.sheet.current,
+.sheet.next {
+  z-index: 8;
+  transform: rotateX(0deg) translateZ(0) scaleY(1) !important;
+  filter: none !important;
 }
 
-.sheet.turned:not(.parked) .sheet-front {
-  animation: paper-curl-up var(--paper-turn-duration) cubic-bezier(.52,.01,.25,1) both;
+/* Pages older than the immediately previous sheet are put away. Only one
+   flipped page remains visible, avoiding an impossible fan of paper. */
+.sheet.stored {
+  display: none !important;
 }
 
-.sheet.turned:not(.parked)::after {
-  animation: broad-curl-up var(--paper-turn-duration) cubic-bezier(.52,.01,.25,1) both;
+/* Final resting position: the whole prior page is still there, partly flipped
+   upward. Because it is past vertical, the viewer sees its blank reverse. */
+.sheet.parked {
+  z-index: 18 !important;
+  transform: rotateX(var(--park-angle)) translateZ(0) scaleY(.995) !important;
+  transform-origin: top center !important;
+  filter: drop-shadow(0 -15px 18px rgba(35,25,14,.20)) !important;
+  pointer-events: none;
 }
 
-.sheet.turned:not(.parked)::before {
-  animation: curl-shadow-up var(--paper-turn-duration) cubic-bezier(.52,.01,.25,1) both;
+/* Forward motion is a single-sheet lift, not a clipping wave. Small changes in
+   scale and Z-depth suggest flexible paper while the entire page moves. */
+.sheet.turning-forward {
+  z-index: 24 !important;
+  animation: legal-page-up var(--paper-turn-duration) cubic-bezier(.48,.02,.22,1) both;
+  pointer-events: none;
 }
 
-/* Returning a parked sheet reverses the broad curl. The blank reverse fades
-   away as the printed face opens back down onto the stack. */
-.sheet.returning {
-  z-index: 20 !important;
+.sheet.turning-back {
+  z-index: 24 !important;
+  animation: legal-page-down var(--paper-turn-duration) cubic-bezier(.48,.02,.22,1) both;
 }
 
-.sheet.returning .sheet-front {
-  animation: paper-curl-down var(--paper-turn-duration) cubic-bezier(.52,.01,.25,1) both;
-}
-
-.sheet.returning::after {
-  animation: broad-curl-down var(--paper-turn-duration) cubic-bezier(.52,.01,.25,1) both;
-}
-
-.sheet.returning::before {
-  animation: curl-shadow-down var(--paper-turn-duration) cubic-bezier(.52,.01,.25,1) both;
-}
-
-.sheet.returning.parked .sheet-back {
-  animation: parked-back-away 390ms ease-out both;
-}
-
-@keyframes paper-curl-up {
+@keyframes legal-page-up {
   0% {
-    clip-path: inset(0 0 0 0);
-    transform: translateY(0) scaleY(1);
-    filter: brightness(1);
+    transform: rotateX(0deg) translateZ(0) scaleY(1);
+    filter: drop-shadow(0 8px 10px rgba(35,25,14,.08));
   }
-  18% {
-    clip-path: inset(0 0 6% 0);
-    transform: translateY(-1px) scaleY(.999);
-  }
-  40% {
-    clip-path: inset(0 0 27% 0);
-    transform: translateY(-4px) scaleY(.997);
-    filter: brightness(.994);
-  }
-  62% {
-    clip-path: inset(0 0 54% 0);
-    transform: translateY(-8px) scaleY(.992);
-    filter: brightness(.986);
-  }
-  82% {
-    clip-path: inset(0 0 80% 0);
-    transform: translateY(-12px) scaleY(.987);
-    filter: brightness(.975);
-  }
-  96% {
-    clip-path: inset(0 0 97% 0);
-    transform: translateY(-15px) scaleY(.982);
-    filter: brightness(.965);
-  }
-  100% {
-    clip-path: inset(0 0 100% 0);
-    transform: translateY(-16px) scaleY(.98);
-    filter: brightness(.96);
-  }
-}
-
-@keyframes paper-curl-down {
-  0% {
-    clip-path: inset(0 0 100% 0);
-    transform: translateY(-16px) scaleY(.98);
-    filter: brightness(.96);
-  }
-  14% {
-    clip-path: inset(0 0 90% 0);
-    transform: translateY(-14px) scaleY(.983);
-  }
-  38% {
-    clip-path: inset(0 0 62% 0);
-    transform: translateY(-9px) scaleY(.991);
-    filter: brightness(.982);
-  }
-  64% {
-    clip-path: inset(0 0 30% 0);
-    transform: translateY(-4px) scaleY(.997);
-    filter: brightness(.993);
-  }
-  86% {
-    clip-path: inset(0 0 7% 0);
-    transform: translateY(-1px) scaleY(.999);
-  }
-  100% {
-    clip-path: inset(0 0 0 0);
-    transform: translateY(0) scaleY(1);
-    filter: brightness(1);
-  }
-}
-
-@keyframes broad-curl-up {
-  0% {
-    top: calc(100% - 128px);
-    opacity: 0;
-    transform: perspective(950px) rotateX(-18deg) scaleY(.52);
-  }
-  7% { opacity: .94; }
-  24% {
-    top: 74%;
-    opacity: 1;
-    transform: perspective(950px) rotateX(-27deg) scaleY(.82);
-  }
-  48% {
-    top: 45%;
-    opacity: 1;
-    transform: perspective(950px) rotateX(-31deg) scaleY(.90);
-  }
-  72% {
-    top: 17%;
-    opacity: .98;
-    transform: perspective(950px) rotateX(-28deg) scaleY(.84);
-  }
-  89% {
-    top: -70px;
-    opacity: .94;
-    transform: perspective(950px) rotateX(-22deg) scaleY(.70);
-  }
-  100% {
-    top: -132px;
-    opacity: 0;
-    transform: perspective(950px) rotateX(-14deg) scaleY(.54);
-  }
-}
-
-@keyframes broad-curl-down {
-  0% {
-    top: -132px;
-    opacity: 0;
-    transform: perspective(950px) rotateX(-14deg) scaleY(.54);
-  }
-  10% {
-    top: -70px;
-    opacity: .94;
-    transform: perspective(950px) rotateX(-22deg) scaleY(.70);
+  12% {
+    transform: rotateX(9deg) translateZ(8px) scaleY(.999);
+    filter: drop-shadow(0 12px 13px rgba(35,25,14,.11));
   }
   30% {
-    top: 17%;
-    opacity: .98;
-    transform: perspective(950px) rotateX(-28deg) scaleY(.84);
+    transform: rotateX(31deg) translateZ(24px) scaleY(.994);
+    filter: drop-shadow(0 21px 18px rgba(35,25,14,.15));
   }
-  54% {
-    top: 45%;
-    opacity: 1;
-    transform: perspective(950px) rotateX(-31deg) scaleY(.90);
+  50% {
+    transform: rotateX(61deg) translateZ(38px) scaleY(.986);
+    filter: drop-shadow(0 29px 22px rgba(35,25,14,.19));
   }
-  78% {
-    top: 74%;
-    opacity: 1;
-    transform: perspective(950px) rotateX(-27deg) scaleY(.82);
+  68% {
+    transform: rotateX(88deg) translateZ(34px) scaleY(.981);
+    filter: drop-shadow(0 28px 22px rgba(35,25,14,.22));
   }
-  94% { opacity: .9; }
+  83% {
+    transform: rotateX(104deg) translateZ(20px) scaleY(.987);
+    filter: drop-shadow(0 -8px 20px rgba(35,25,14,.22));
+  }
   100% {
-    top: calc(100% - 128px);
-    opacity: 0;
-    transform: perspective(950px) rotateX(-18deg) scaleY(.52);
+    transform: rotateX(var(--park-angle)) translateZ(0) scaleY(.995);
+    filter: drop-shadow(0 -15px 18px rgba(35,25,14,.20));
   }
 }
 
-@keyframes curl-shadow-up {
-  0% { top: calc(100% - 52px); opacity: 0; transform: scaleX(.72); }
-  10% { opacity: .65; }
-  25% { top: 82%; opacity: .72; transform: scaleX(.91); }
-  50% { top: 52%; opacity: .68; transform: scaleX(1); }
-  74% { top: 24%; opacity: .56; transform: scaleX(.94); }
-  92% { top: -14px; opacity: .3; transform: scaleX(.78); }
-  100% { top: -80px; opacity: 0; transform: scaleX(.68); }
+@keyframes legal-page-down {
+  0% {
+    transform: rotateX(var(--park-angle)) translateZ(0) scaleY(.995);
+    filter: drop-shadow(0 -15px 18px rgba(35,25,14,.20));
+  }
+  17% {
+    transform: rotateX(104deg) translateZ(20px) scaleY(.987);
+    filter: drop-shadow(0 -8px 20px rgba(35,25,14,.22));
+  }
+  32% {
+    transform: rotateX(88deg) translateZ(34px) scaleY(.981);
+    filter: drop-shadow(0 28px 22px rgba(35,25,14,.22));
+  }
+  50% {
+    transform: rotateX(61deg) translateZ(38px) scaleY(.986);
+    filter: drop-shadow(0 29px 22px rgba(35,25,14,.19));
+  }
+  70% {
+    transform: rotateX(31deg) translateZ(24px) scaleY(.994);
+    filter: drop-shadow(0 21px 18px rgba(35,25,14,.15));
+  }
+  88% {
+    transform: rotateX(9deg) translateZ(8px) scaleY(.999);
+    filter: drop-shadow(0 12px 13px rgba(35,25,14,.11));
+  }
+  100% {
+    transform: rotateX(0deg) translateZ(0) scaleY(1);
+    filter: drop-shadow(0 8px 10px rgba(35,25,14,.08));
+  }
 }
 
-@keyframes curl-shadow-down {
-  0% { top: -80px; opacity: 0; transform: scaleX(.68); }
-  10% { top: -14px; opacity: .3; transform: scaleX(.78); }
-  30% { top: 24%; opacity: .56; transform: scaleX(.94); }
-  54% { top: 52%; opacity: .68; transform: scaleX(1); }
-  78% { top: 82%; opacity: .72; transform: scaleX(.91); }
-  94% { opacity: .6; }
-  100% { top: calc(100% - 52px); opacity: 0; transform: scaleX(.72); }
-}
-
-@keyframes parked-back-away {
-  from { opacity: 1; transform: perspective(1100px) rotateX(-8deg) scaleX(.992); }
-  to { opacity: 0; transform: perspective(1100px) rotateX(-18deg) translateY(-28px) scaleX(.985); }
-}
-
-.sheet.turned {
+/* A subtle moving highlight across the free third of the sheet adds the sense
+   of a broad curl. It moves with the whole page rather than travelling up it. */
+.sheet.turning-forward .sheet-front::after,
+.sheet.turning-back .sheet-front::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 31%;
   pointer-events: none;
+  background:
+    linear-gradient(to top,
+      rgba(75,55,31,.15) 0%,
+      rgba(229,216,181,.08) 28%,
+      rgba(255,249,226,.18) 54%,
+      transparent 82%);
+  transform-origin: bottom center;
+  animation: free-edge-flex var(--paper-turn-duration) ease-in-out both;
+}
+
+.sheet.turning-back .sheet-front::after {
+  animation-direction: reverse;
+}
+
+@keyframes free-edge-flex {
+  0%, 100% { opacity: .15; transform: scaleY(.92); }
+  35% { opacity: .58; transform: scaleY(1.08); }
+  62% { opacity: .72; transform: scaleY(1.14); }
+  82% { opacity: .42; transform: scaleY(1.02); }
 }
 
 @media (max-width: 760px) {
-  .sheet::after { height: 188px; }
-  .sheet.parked .sheet-back {
-    top: -82px;
-    height: 94px;
-  }
+  :root { --park-angle: 110deg; }
+  .book-wrap { perspective: 1800px !important; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .sheet.turned .sheet-front {
+  .sheet.turning-forward,
+  .sheet.parked {
     animation: none !important;
-    clip-path: inset(0 0 100% 0);
-    transform: none !important;
+    transform: rotateX(var(--park-angle)) translateZ(0) scaleY(.995) !important;
     filter: none !important;
   }
 
-  .sheet.returning .sheet-front,
-  .sheet.current .sheet-front,
-  .sheet.next .sheet-front {
+  .sheet.turning-back,
+  .sheet.current,
+  .sheet.next {
     animation: none !important;
-    clip-path: inset(0 0 0 0);
-    transform: none !important;
+    transform: rotateX(0deg) translateZ(0) scaleY(1) !important;
     filter: none !important;
   }
 
-  .sheet::before,
-  .sheet::after {
+  .sheet.turning-forward .sheet-front::after,
+  .sheet.turning-back .sheet-front::after {
     display: none !important;
-  }
-
-  .sheet.parked .sheet-back {
-    display: block !important;
-    opacity: 1 !important;
-    transform: none !important;
   }
 }
