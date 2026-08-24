@@ -2,7 +2,7 @@
 
 Development reference only. This file distinguishes real institutional history from fictional survey-prop material.
 
-## Candidate institutions
+## Selected institution
 
 ### City of London Lunatic Asylum, Stone, near Dartford
 
@@ -13,9 +13,14 @@ Development reference only. This file distinguishes real institutional history f
 - The original institution used a corridor-plan building with separate male and female wings.
 - Stone House Farm was acquired in 1887.
 
-**DESIGN VALUE**
-- Strongest subtle campaign breadcrumb because `City of London` will later matter to the opening investigation without directly saying Whitechapel, Jack the Ripper, or 1888.
-- The institution is substantially less famous than Bethlem, so the clue is less likely to immediately reveal the trick.
+**LOCKED PROTOTYPE USE**
+- Use `City of London Lunatic Asylum` as the visible institutional identity for the survey experience.
+- Use `Stone, near Dartford, Kent` as the location line.
+- `Corporation of London` may appear as institutional authority/letterhead language.
+- The design value is a subtle `City of London` breadcrumb that may acquire significance only after the campaign begins.
+- Do not add Whitechapel, Jack the Ripper, Mitre Square, September 1888, supernatural terminology, or other overt campaign reveals to the player-facing survey.
+
+## Alternate institutions researched but not selected
 
 ### Colney Hatch Asylum / Second Middlesex County Pauper Lunatic Asylum
 
@@ -24,29 +29,25 @@ Development reference only. This file distinguishes real institutional history f
 - Commonly known as Colney Hatch Asylum.
 - Historic England describes its catchment as north and east London and notes patients from the impoverished Jewish community of London's East End.
 
-**DESIGN VALUE**
-- Strong East End breadcrumb, but the connection is more social/geographic than institutional.
-
 ### Middlesex County Asylum / Hanwell Asylum
 
 **HISTORICAL FACT**
 - Opened in 1831 as the Middlesex County Lunatic Asylum and was also known as Middlesex County Asylum or Hanwell Asylum.
 
-**DESIGN VALUE**
-- Excellent period texture, but weaker direct connection to the campaign opening than Stone or Colney Hatch.
-
 ## Fictional prop elements
 
 The following are **FICTIONAL INSERTIONS** unless later research establishes an exact historical analogue:
-- `The Institute for Personal Observation`
 - `Form 7-B`
 - random `P-#####` file numbers
 - the survey questions and answer choices
 - `Preliminary Case Inquiry`
-- examiner instructions currently shown in the prototype
+- `Preliminary Personal Examination`
+- examiner instructions shown in the prototype
 - `CONFIDENTIAL`, `UNASSESSED`, `IN EXAMINATION`, and similar workflow stamps/statuses as presented by the site
 
-Do not present these fictional administrative details as reproductions of authentic asylum forms.
+The former prototype name `The Institute for Personal Observation` was fictional and has been retired from player-facing use.
+
+Do not present fictional administrative details as reproductions of authentic asylum forms.
 
 ## Sources consulted
 
