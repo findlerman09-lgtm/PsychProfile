@@ -1,20 +1,22 @@
 /* Paper-motion prototype overrides.
    Physical model: a legal-pad sheet lifts as one page, flexes slightly at the
-   free edge, and remains partly flipped above the active sheet. */
+   free edge, and remains substantially flipped above the active sheet. */
 
 :root {
   --paper-turn-duration: 1120ms;
-  --park-angle: 116deg;
+  /* 180deg would be completely folded flat behind the pad. 152deg leaves the
+     previous page visibly raised while showing most of its full reverse. */
+  --park-angle: 152deg;
 }
 
-/* Let a lifted sheet rise above the current page and over the surrounding file
-   furniture, the way a real page would when propped up from a pad on a table. */
+/* The turned page is a physical layer above the fixed institutional furniture. */
 .book-wrap {
-  z-index: 7 !important;
+  z-index: 20 !important;
   overflow: visible;
-  perspective: 2100px !important;
-  perspective-origin: 50% 12% !important;
+  perspective: 2600px !important;
+  perspective-origin: 50% 8% !important;
   transform-style: preserve-3d;
+  isolation: isolate;
 }
 
 .sheet {
@@ -40,13 +42,14 @@
 .sheet-back {
   display: block !important;
   opacity: 1 !important;
-  transform: rotateX(180deg) !important;
-  background:
-    radial-gradient(ellipse at 46% 20%, rgba(255,255,255,.16), transparent 35%),
+  visibility: visible !important;
+  transform: rotateX(180deg) translateZ(1px) !important;
+  background-color: #e3d7b9 !important;
+  background-image:
+    radial-gradient(ellipse at 46% 20%, rgba(255,255,255,.13), transparent 35%),
     repeating-linear-gradient(0deg, rgba(66,53,34,.014) 0 1px, transparent 1px 5px),
-    linear-gradient(94deg, rgba(105,82,48,.045), transparent 16%, rgba(255,255,255,.035) 82%, rgba(87,67,38,.045)),
-    #e3d7b9 !important;
-  border-color: #877a60 !important;
+    linear-gradient(94deg, rgba(105,82,48,.045), transparent 16%, rgba(255,255,255,.03) 82%, rgba(87,67,38,.045)) !important;
+  border: 1px solid #877a60 !important;
   box-shadow:
     inset 0 0 72px rgba(111,85,47,.075),
     inset 0 -24px 34px rgba(94,72,42,.06) !important;
@@ -57,24 +60,23 @@
   display: none !important;
 }
 
-/* A broad darkening along the free edge of the back suggests a small amount of
-   paper bow without making the sheet behave like a rigid slab. */
+/* Slight weight at the loose edge: enough to keep it from reading as card,
+   without returning to the travelling-wave effect. */
 .sheet-back::after {
   content: '';
   position: absolute;
-  left: 1.5%;
-  right: 1.5%;
+  left: 1.2%;
+  right: 1.2%;
   bottom: -1px;
-  height: 92px;
+  height: 78px;
   pointer-events: none;
-  border-radius: 0 0 48% 48% / 0 0 18% 18%;
-  background:
-    linear-gradient(to top,
-      rgba(80,60,34,.20) 0%,
-      rgba(173,151,110,.10) 22%,
-      rgba(247,238,209,.10) 55%,
-      transparent 100%);
-  box-shadow: inset 0 -8px 12px rgba(75,55,31,.08);
+  border-radius: 0 0 48% 48% / 0 0 16% 16%;
+  background: linear-gradient(to top,
+    rgba(80,60,34,.18) 0%,
+    rgba(173,151,110,.08) 24%,
+    rgba(247,238,209,.07) 56%,
+    transparent 100%);
+  box-shadow: inset 0 -8px 12px rgba(75,55,31,.07);
 }
 
 .sheet.current,
@@ -84,32 +86,36 @@
   filter: none !important;
 }
 
-/* Pages older than the immediately previous sheet are put away. Only one
-   flipped page remains visible, avoiding an impossible fan of paper. */
+/* Pages older than the immediately previous sheet are put away. */
 .sheet.stored {
   display: none !important;
 }
 
-/* Final resting position: the whole prior page is still there, partly flipped
-   upward. Because it is past vertical, the viewer sees its blank reverse. */
+/* Final resting position. Most of the full blank reverse is now visible above
+   the current sheet rather than collapsing into a narrow foreshortened strip. */
 .sheet.parked {
-  z-index: 18 !important;
-  transform: rotateX(var(--park-angle)) translateZ(0) scaleY(.995) !important;
+  z-index: 60 !important;
+  transform: rotateX(var(--park-angle)) translateZ(2px) scaleY(.998) !important;
   transform-origin: top center !important;
-  filter: drop-shadow(0 -15px 18px rgba(35,25,14,.20)) !important;
+  filter: drop-shadow(0 -22px 22px rgba(35,25,14,.24)) !important;
   pointer-events: none;
 }
 
-/* Forward motion is a single-sheet lift, not a clipping wave. Small changes in
-   scale and Z-depth suggest flexible paper while the entire page moves. */
+.sheet.parked .sheet-back {
+  opacity: 1 !important;
+  background-color: #e3d7b9 !important;
+}
+
+/* Forward motion is a single-sheet lift. The whole page moves together; only
+   the loose edge flexes slightly. */
 .sheet.turning-forward {
-  z-index: 24 !important;
+  z-index: 70 !important;
   animation: legal-page-up var(--paper-turn-duration) cubic-bezier(.48,.02,.22,1) both;
   pointer-events: none;
 }
 
 .sheet.turning-back {
-  z-index: 24 !important;
+  z-index: 70 !important;
   animation: legal-page-down var(--paper-turn-duration) cubic-bezier(.48,.02,.22,1) both;
 }
 
@@ -119,54 +125,62 @@
     filter: drop-shadow(0 8px 10px rgba(35,25,14,.08));
   }
   12% {
-    transform: rotateX(9deg) translateZ(8px) scaleY(.999);
+    transform: rotateX(10deg) translateZ(8px) scaleY(.999);
     filter: drop-shadow(0 12px 13px rgba(35,25,14,.11));
   }
   30% {
-    transform: rotateX(31deg) translateZ(24px) scaleY(.994);
+    transform: rotateX(34deg) translateZ(25px) scaleY(.995);
     filter: drop-shadow(0 21px 18px rgba(35,25,14,.15));
   }
-  50% {
-    transform: rotateX(61deg) translateZ(38px) scaleY(.986);
-    filter: drop-shadow(0 29px 22px rgba(35,25,14,.19));
+  49% {
+    transform: rotateX(67deg) translateZ(40px) scaleY(.989);
+    filter: drop-shadow(0 30px 23px rgba(35,25,14,.19));
   }
-  68% {
-    transform: rotateX(88deg) translateZ(34px) scaleY(.981);
-    filter: drop-shadow(0 28px 22px rgba(35,25,14,.22));
+  65% {
+    transform: rotateX(96deg) translateZ(38px) scaleY(.986);
+    filter: drop-shadow(0 10px 24px rgba(35,25,14,.22));
   }
-  83% {
-    transform: rotateX(104deg) translateZ(20px) scaleY(.987);
-    filter: drop-shadow(0 -8px 20px rgba(35,25,14,.22));
+  80% {
+    transform: rotateX(125deg) translateZ(25px) scaleY(.991);
+    filter: drop-shadow(0 -12px 22px rgba(35,25,14,.23));
+  }
+  92% {
+    transform: rotateX(144deg) translateZ(10px) scaleY(.996);
+    filter: drop-shadow(0 -19px 22px rgba(35,25,14,.24));
   }
   100% {
-    transform: rotateX(var(--park-angle)) translateZ(0) scaleY(.995);
-    filter: drop-shadow(0 -15px 18px rgba(35,25,14,.20));
+    transform: rotateX(var(--park-angle)) translateZ(2px) scaleY(.998);
+    filter: drop-shadow(0 -22px 22px rgba(35,25,14,.24));
   }
 }
 
 @keyframes legal-page-down {
   0% {
-    transform: rotateX(var(--park-angle)) translateZ(0) scaleY(.995);
-    filter: drop-shadow(0 -15px 18px rgba(35,25,14,.20));
+    transform: rotateX(var(--park-angle)) translateZ(2px) scaleY(.998);
+    filter: drop-shadow(0 -22px 22px rgba(35,25,14,.24));
   }
-  17% {
-    transform: rotateX(104deg) translateZ(20px) scaleY(.987);
-    filter: drop-shadow(0 -8px 20px rgba(35,25,14,.22));
+  12% {
+    transform: rotateX(144deg) translateZ(10px) scaleY(.996);
+    filter: drop-shadow(0 -19px 22px rgba(35,25,14,.24));
   }
-  32% {
-    transform: rotateX(88deg) translateZ(34px) scaleY(.981);
-    filter: drop-shadow(0 28px 22px rgba(35,25,14,.22));
+  27% {
+    transform: rotateX(125deg) translateZ(25px) scaleY(.991);
+    filter: drop-shadow(0 -12px 22px rgba(35,25,14,.23));
   }
-  50% {
-    transform: rotateX(61deg) translateZ(38px) scaleY(.986);
-    filter: drop-shadow(0 29px 22px rgba(35,25,14,.19));
+  43% {
+    transform: rotateX(96deg) translateZ(38px) scaleY(.986);
+    filter: drop-shadow(0 10px 24px rgba(35,25,14,.22));
   }
-  70% {
-    transform: rotateX(31deg) translateZ(24px) scaleY(.994);
+  61% {
+    transform: rotateX(67deg) translateZ(40px) scaleY(.989);
+    filter: drop-shadow(0 30px 23px rgba(35,25,14,.19));
+  }
+  79% {
+    transform: rotateX(34deg) translateZ(25px) scaleY(.995);
     filter: drop-shadow(0 21px 18px rgba(35,25,14,.15));
   }
-  88% {
-    transform: rotateX(9deg) translateZ(8px) scaleY(.999);
+  92% {
+    transform: rotateX(10deg) translateZ(8px) scaleY(.999);
     filter: drop-shadow(0 12px 13px rgba(35,25,14,.11));
   }
   100% {
@@ -175,8 +189,8 @@
   }
 }
 
-/* A subtle moving highlight across the free third of the sheet adds the sense
-   of a broad curl. It moves with the whole page rather than travelling up it. */
+/* Broad loose-edge flex. This moves with the sheet; it is not a wave travelling
+   up the page. */
 .sheet.turning-forward .sheet-front::after,
 .sheet.turning-back .sheet-front::after {
   content: '';
@@ -184,14 +198,13 @@
   left: 0;
   right: 0;
   bottom: 0;
-  height: 31%;
+  height: 26%;
   pointer-events: none;
-  background:
-    linear-gradient(to top,
-      rgba(75,55,31,.15) 0%,
-      rgba(229,216,181,.08) 28%,
-      rgba(255,249,226,.18) 54%,
-      transparent 82%);
+  background: linear-gradient(to top,
+    rgba(75,55,31,.13) 0%,
+    rgba(229,216,181,.07) 30%,
+    rgba(255,249,226,.14) 56%,
+    transparent 84%);
   transform-origin: bottom center;
   animation: free-edge-flex var(--paper-turn-duration) ease-in-out both;
 }
@@ -201,22 +214,22 @@
 }
 
 @keyframes free-edge-flex {
-  0%, 100% { opacity: .15; transform: scaleY(.92); }
-  35% { opacity: .58; transform: scaleY(1.08); }
-  62% { opacity: .72; transform: scaleY(1.14); }
-  82% { opacity: .42; transform: scaleY(1.02); }
+  0%, 100% { opacity: .12; transform: scaleY(.96); }
+  38% { opacity: .46; transform: scaleY(1.05); }
+  64% { opacity: .58; transform: scaleY(1.08); }
+  84% { opacity: .30; transform: scaleY(1.01); }
 }
 
 @media (max-width: 760px) {
-  :root { --park-angle: 110deg; }
-  .book-wrap { perspective: 1800px !important; }
+  :root { --park-angle: 148deg; }
+  .book-wrap { perspective: 2200px !important; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .sheet.turning-forward,
   .sheet.parked {
     animation: none !important;
-    transform: rotateX(var(--park-angle)) translateZ(0) scaleY(.995) !important;
+    transform: rotateX(var(--park-angle)) translateZ(2px) scaleY(.998) !important;
     filter: none !important;
   }
 
