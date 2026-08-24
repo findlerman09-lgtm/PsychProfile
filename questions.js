@@ -12,23 +12,6 @@
   if (q1) Object.assign(q1.dataset, { validate: 'checkbox', min: '2', max: '2' });
   if (q2) Object.assign(q2.dataset, { validate: 'checkbox', min: '1', max: '2' });
 
-  const intro = book.querySelector('section[data-page="0"] .sheet-front');
-  if (intro && !intro.querySelector('.classification-rubric')) {
-    const rubric = document.createElement('div');
-    rubric.className = 'classification-rubric';
-    rubric.setAttribute('aria-label', 'Assessment domains');
-    rubric.innerHTML = `
-      <span class="rubric-label">ASSESSMENT DOMAINS</span>
-      <span>CIVIC</span>
-      <span>EXPEDITIONARY</span>
-      <span>COVERT</span>
-      <span>TECHNICAL</span>
-      <span>PROTECTIVE</span>
-      <span>IRREGULAR</span>`;
-    const acknowledgement = intro.querySelector('.acknowledgement');
-    intro.insertBefore(rubric, acknowledgement || null);
-  }
-
   function backFace() {
     return '<div class="sheet-face sheet-back" aria-hidden="true"></div>';
   }
@@ -58,23 +41,24 @@
       page: 3,
       question: 'III',
       code: 'FORM 7-B · APTITUDE',
-      classification: 'SCHOLASTIC / TECHNICAL / FIELD',
       validate: 'checkbox', min: 1, max: 3,
       title: 'Which kinds of problems would you most enjoy being the person everyone turns to solve?',
       prompt: 'Pick up to <strong>three</strong>.',
       body: `<fieldset data-max="3">
         <legend class="sr-only">Choose up to three responses</legend>
-        ${checkbox('q3', 'medical', 'Medical problems')}
-        ${checkbox('q3', 'scientific', 'Scientific problems')}
-        ${checkbox('q3', 'mechanical', 'Mechanical or technical problems')}
-        ${checkbox('q3', 'records', 'Books, records, or specialist knowledge')}
-        ${checkbox('q3', 'crime', 'Crime or investigation')}
-        ${checkbox('q3', 'danger', 'Weapons or physical danger')}
-        ${checkbox('q3', 'travel', 'Travel, terrain, or survival')}
-        ${checkbox('q3', 'influential', 'Important or influential people')}
-        ${checkbox('q3', 'street', 'Ordinary people, neighborhoods, or street knowledge')}
-        ${checkbox('q3', 'persuasion', 'Persuasion, deception, or reading people')}
-        ${checkbox('q3', 'ethics', 'Religion, ethics, or human suffering')}
+        ${checkbox('q3', 'medical', 'Medicine, injury, or caring for people')}
+        ${checkbox('q3', 'scientific', 'Science, analysis, or figuring out why something happened')}
+        ${checkbox('q3', 'technical', 'Machines, locks, security, or technical systems')}
+        ${checkbox('q3', 'lore', 'Old languages, artifacts, ruins, books, or specialist lore')}
+        ${checkbox('q3', 'investigation', 'Crime, investigation, or reconstructing events')}
+        ${checkbox('q3', 'combat', 'Weapons, fighting, or handling physical danger')}
+        ${checkbox('q3', 'movement', 'Sneaking, climbing, chasing, or getting into difficult places')}
+        ${checkbox('q3', 'travel', 'Travel, wilderness, navigation, or exploration')}
+        ${checkbox('q3', 'influential', 'Important people, formal institutions, or high society')}
+        ${checkbox('q3', 'street', 'Ordinary people, neighborhoods, or street networks')}
+        ${checkbox('q3', 'social', 'Persuasion, deception, disguise, or maintaining a cover identity')}
+        ${checkbox('q3', 'leadership', 'Leadership, protection, or keeping other people functioning under pressure')}
+        ${checkbox('q3', 'ethics', 'Religion, ethics, or helping people through difficult circumstances')}
         ${writeInTrigger('checkbox', 'q3', 'other', 'Other', 'q3-other')}
       </fieldset>`
     },
@@ -82,20 +66,20 @@
       page: 4,
       question: 'IV',
       code: 'FORM 7-B · HAZARD RESPONSE',
-      classification: 'PROTECTIVE / COMBAT / EVASIVE',
       validate: 'radio',
       title: 'Things suddenly go very badly.',
       prompt: 'Which response sounds most fun?',
       body: `<fieldset>
         <legend class="sr-only">Choose one response</legend>
         ${radio('q4', 'protect', 'Get someone else out first')}
-        ${radio('q4', 'calm', 'Calm everyone')}
-        ${radio('q4', 'command', 'Take control and give orders')}
-        ${radio('q4', 'weapon', 'Draw a weapon and take charge of the threat')}
+        ${radio('q4', 'calm', 'Calm everyone down before panic makes it worse')}
+        ${radio('q4', 'command', 'Take control and start giving orders')}
+        ${radio('q4', 'weapon', 'Draw a weapon and take charge of the immediate threat')}
         ${radio('q4', 'close', 'Get close and deal with it physically')}
-        ${radio('q4', 'assess', 'Find cover, assess, then act')}
-        ${radio('q4', 'chase', 'Chase the person who is getting away')}
-        ${radio('q4', 'environment', 'Use the surroundings cleverly')}
+        ${radio('q4', 'assess', 'Find cover, assess what is happening, then act')}
+        ${radio('q4', 'chase', 'Go after the person who is getting away')}
+        ${radio('q4', 'environment', 'Use the surroundings, a tool, or a vehicle in a clever way')}
+        ${radio('q4', 'shield', 'Stand between the danger and everyone else')}
         ${radio('q4', 'escape', 'Find the exit and get everyone through it')}
         ${radio('q4', 'reckless', 'Try the ridiculous idea that might actually work')}
       </fieldset>`
@@ -103,30 +87,28 @@
     {
       page: 5,
       question: 'V',
-      code: 'FORM 7-B · OUTCOME PREFERENCE',
-      classification: 'ANALYTICAL / SOCIAL / ACTION',
+      code: 'FORM 7-B · ACCESS',
       validate: 'checkbox', min: 2, max: 2,
-      title: 'Which victories feel best?',
-      prompt: 'Pick <strong>two</strong>.',
+      title: 'Which two doors would you most enjoy your character being unusually comfortable opening?',
+      prompt: 'Not literally every time. Pick the <strong>two kinds of places</strong> where you would enjoy having an edge.',
       body: `<fieldset data-max="2">
         <legend class="sr-only">Choose exactly two responses</legend>
-        ${checkbox('q5', 'noticed', '“Nobody else noticed that.”')}
-        ${checkbox('q5', 'truth', 'They finally told me the truth')}
-        ${checkbox('q5', 'paperwork', 'The answer was sitting in the paperwork')}
-        ${checkbox('q5', 'specialist', 'I knew something nobody else knew')}
-        ${checkbox('q5', 'deduced', 'I figured it out before anyone explained it')}
-        ${checkbox('q5', 'access', 'I got us somewhere we were not supposed to be')}
-        ${checkbox('q5', 'saved', 'I saved someone')}
-        ${checkbox('q5', 'outsmarted', 'I outsmarted them')}
-        ${checkbox('q5', 'caught', 'I caught them')}
-        ${checkbox('q5', 'survived', 'I survived something I probably should not have tried')}
+        ${checkbox('q5', 'society', 'A private club, fashionable house, or invitation-only gathering')}
+        ${checkbox('q5', 'official', 'A government, police, military, or other official office')}
+        ${checkbox('q5', 'technical', 'A workshop, laboratory, machine room, or secured technical space')}
+        ${checkbox('q5', 'medical', 'A hospital, sickroom, morgue, or medical institution')}
+        ${checkbox('q5', 'archive', 'A library, archive, museum collection, or restricted body of records')}
+        ${checkbox('q5', 'transport', 'A ship, dockyard, station, train, or place people are about to depart from')}
+        ${checkbox('q5', 'underworld', 'A criminal back room, gambling den, smuggler’s haunt, or rough drinking place')}
+        ${checkbox('q5', 'backstage', 'Backstage, behind the scenes, or among performers and public personalities')}
+        ${checkbox('q5', 'remote', 'A remote estate, excavation, ruin, wilderness camp, or isolated property')}
+        ${checkbox('q5', 'restricted', 'A guarded or restricted place where bluffing, stealth, or bypassing security matters')}
       </fieldset>`
     },
     {
       page: 6,
       question: 'VI',
-      code: 'FORM 7-B · DISPOSITION MATRIX',
-      classification: 'SOCIAL / PROCEDURAL / IRREGULAR',
+      code: 'FORM 7-B · DISPOSITION',
       validate: 'radio-count', min: 8,
       title: 'Pick whichever side you lean toward.',
       prompt: 'Do not worry about keeping the answers consistent.',
@@ -145,8 +127,7 @@
     {
       page: 7,
       question: 'VII',
-      code: 'FORM 7-B · SPECIALIST UTILITY',
-      classification: 'CIVIC / EXPEDITIONARY / COVERT',
+      code: 'FORM 7-B · UTILITY',
       validate: 'radio',
       title: 'Someone says, “We need you for this.”',
       prompt: 'What would you most like the next sentence to be?',
@@ -161,6 +142,7 @@
         ${radio('q7', 'inside', '“You can get us inside.”')}
         ${radio('q7', 'people', '“You know people.”')}
         ${radio('q7', 'place', '“You know this place.”')}
+        ${radio('q7', 'shadow', '“You can follow them without being seen.”')}
         ${radio('q7', 'think', '“You understand how people like this think.”')}
         ${radio('q7', 'idea', '“You always come up with something.”')}
         ${writeInTrigger('radio', 'q7', 'other', 'Other', 'q7-other')}
@@ -169,8 +151,7 @@
     {
       page: 8,
       question: 'VIII',
-      code: 'FORM 7-B · LIABILITY INDEX',
-      classification: 'TEMPERAMENT / REPUTATION / OBLIGATION',
+      code: 'FORM 7-B · LIABILITY',
       validate: 'radio',
       title: 'Perfect people are boring.',
       prompt: 'Which problem would you actually enjoy occasionally making life harder?',
@@ -179,7 +160,7 @@
         ${radio('q8', 'pride', 'Pride')}
         ${radio('q8', 'impatience', 'Impatience')}
         ${radio('q8', 'temper', 'A temper')}
-        ${radio('q8', 'curious', 'Too curious')}
+        ${radio('q8', 'curious', 'Being too curious for my own good')}
         ${radio('q8', 'orders', 'Trouble taking orders')}
         ${radio('q8', 'trust', 'Trouble trusting people')}
         ${radio('q8', 'softspot', 'A soft spot someone could exploit')}
@@ -187,6 +168,7 @@
         ${radio('q8', 'money', 'Money problems')}
         ${radio('q8', 'risks', 'Taking unnecessary risks')}
         ${radio('q8', 'responsible', 'Feeling responsible for everyone')}
+        ${radio('q8', 'code', 'A personal code I refuse to break even when it would be easier')}
         ${radio('q8', 'knows-it', 'Being very good at something and knowing it')}
         ${writeInTrigger('radio', 'q8', 'other', 'Other', 'q8-other')}
       </fieldset>`
@@ -195,23 +177,23 @@
       page: 9,
       question: 'IX',
       code: 'FORM 7-B · EXTERNAL PRESSURES',
-      classification: 'SOCIAL / PROFESSIONAL / PRIVATE',
       validate: 'checkbox', min: 1, max: 2,
       title: 'Which complication could make the story more interesting rather than annoying?',
       prompt: 'Choose up to <strong>two</strong>.',
       body: `<fieldset data-max="2">
         <legend class="sr-only">Choose one or two responses</legend>
         ${checkbox('q9', 'family', 'Family obligations')}
-        ${checkbox('q9', 'reputation', 'Professional reputation')}
-        ${checkbox('q9', 'money', 'Money')}
+        ${checkbox('q9', 'reputation', 'Professional or public reputation')}
+        ${checkbox('q9', 'money', 'Money problems')}
         ${checkbox('q9', 'rival', 'An old rival')}
-        ${checkbox('q9', 'mistake', 'A past mistake')}
+        ${checkbox('q9', 'mistake', 'A past mistake that can still matter')}
         ${checkbox('q9', 'dependent', 'Someone depending on me')}
         ${checkbox('q9', 'authority', 'Conflict with authority')}
-        ${checkbox('q9', 'expectations', 'Social expectations')}
+        ${checkbox('q9', 'expectations', 'Social expectations or family status')}
         ${checkbox('q9', 'romance', 'Romantic complications')}
-        ${checkbox('q9', 'secret', 'A secret')}
-        ${checkbox('q9', 'enemy', 'An enemy')}
+        ${checkbox('q9', 'secret', 'A secret I have reasons to protect')}
+        ${checkbox('q9', 'enemy', 'An enemy who knows who I am')}
+        ${checkbox('q9', 'obligation', 'An organization, employer, patron, or cause that expects things from me')}
         ${checkbox('q9', 'little-drama', 'I would rather not have much personal drama')}
         ${checkbox('q9', 'surprise', 'Surprise me')}
       </fieldset>`
@@ -219,24 +201,30 @@
     {
       page: 10,
       question: 'X',
-      code: 'FORM 7-B · MORAL DISCRETION',
-      classification: 'ETHICAL / OPERATIONAL',
+      code: 'FORM 7-B · PREFERRED MOMENT',
       validate: 'radio',
-      title: 'The situation has no clean solution.',
-      prompt: 'How does that sound?',
-      body: `<fieldset class="short-options">
+      title: 'You get one scene where everyone at the table knows this is what your character is for.',
+      prompt: 'Which moment sounds best?',
+      body: `<fieldset>
         <legend class="sr-only">Choose one response</legend>
-        ${radio('q10', 'excellent', 'Excellent. Make me choose.')}
-        ${radio('q10', 'fine', 'Fine with me.')}
-        ${radio('q10', 'occasionally', 'Occasionally.')}
-        ${radio('q10', 'clear', 'I would rather there usually be a clear right thing to do.')}
+        ${radio('q10', 'room', 'Read a hostile room correctly and turn the right person into an ally')}
+        ${radio('q10', 'clue', 'Recognize the one detail or clue that changes what everyone thinks is happening')}
+        ${radio('q10', 'inscription', 'Recognize what an old inscription, object, or piece of specialist knowledge really means')}
+        ${radio('q10', 'infiltration', 'Get through a guarded place without anyone realizing I do not belong there')}
+        ${radio('q10', 'repair', 'Understand, repair, disable, or improvise something technical under pressure')}
+        ${radio('q10', 'medicine', 'Keep someone alive while everything around me is going wrong')}
+        ${radio('q10', 'pursuit', 'Win a dangerous pursuit across streets, rooftops, vehicles, or rough terrain')}
+        ${radio('q10', 'command', 'Take command while everyone else is panicking or arguing')}
+        ${radio('q10', 'protect', 'Put myself between innocent people and something dangerous')}
+        ${radio('q10', 'contacts', 'Produce exactly the contact, favor, or introduction the group suddenly needs')}
+        ${radio('q10', 'survival', 'Get everyone through a place or situation that looked impossible to survive')}
+        ${radio('q10', 'audacious', 'Make an audacious plan work when the sensible options have failed')}
       </fieldset>`
     },
     {
       page: 11,
       question: 'XI',
       code: 'FORM 7-B · SELF-CONCEPTION',
-      classification: 'ANALYTICAL / SOCIAL / ACTION / IRREGULAR',
       validate: 'radio',
       title: 'Which sentence would be most satisfying to say?',
       prompt: 'Pick the one that feels most like your person.',
@@ -244,13 +232,14 @@
         <legend class="sr-only">Choose one response</legend>
         ${radio('q11', 'wrong-thing', '“You are looking at the wrong thing.”')}
         ${radio('q11', 'alone', '“Give me five minutes alone with them.”')}
-        ${radio('q11', 'explanation', '“There is an explanation. We just have not found it yet.”')}
-        ${radio('q11', 'worse', '“I have been in worse situations than this.”')}
-        ${radio('q11', 'rule-wall', '“That is a rule, not a wall.”')}
-        ${radio('q11', 'protect', '“Nobody else is getting hurt.”')}
+        ${radio('q11', 'way-in', '“I know a way in.”')}
+        ${radio('q11', 'works', '“Tell me how it works.”')}
+        ${radio('q11', 'protect', '“Get behind me.”')}
         ${radio('q11', 'know-someone', '“I know someone.”')}
-        ${radio('q11', 'written', '“The answer is written down somewhere.”')}
-        ${radio('q11', 'no-time', '“We do not have time to debate this.”')}
+        ${radio('q11', 'story', '“That story does not add up.”')}
+        ${radio('q11', 'watched', '“We are being watched.”')}
+        ${radio('q11', 'rule-wall', '“That is a rule, not a wall.”')}
+        ${radio('q11', 'move', '“We need to move. Now.”')}
         ${radio('q11', 'idea', '“I have an idea. You are not going to like it.”')}
         ${writeInTrigger('radio', 'q11', 'mine', 'Mine would be…', 'q11-mine')}
       </fieldset>`
@@ -258,8 +247,7 @@
     {
       page: 12,
       question: 'XII',
-      code: 'FORM 7-B · SOCIAL POSITION',
-      classification: 'ESTABLISHED / ASPIRANT / OUTSIDER',
+      code: 'FORM 7-B · STARTING POSITION',
       validate: 'radio',
       title: 'Where would you rather begin the story?',
       prompt: 'Choose whichever starting position sounds most enjoyable.',
@@ -269,17 +257,16 @@
         ${radio('q12', 'proving', 'Capable but still proving myself')}
         ${radio('q12', 'complicated', 'Talented with a complicated reputation')}
         ${radio('q12', 'outsider', 'An outsider earning people’s trust')}
-        ${radio('q12', 'any', 'Any of those')}
+        ${radio('q12', 'any', 'Any of those — fit me where I work best')}
       </fieldset>`
     },
     {
       page: 13,
       question: 'XIII',
       code: 'FORM 7-B · SUBJECT OVERRIDE',
-      classification: 'FINAL PERSONAL STATEMENT',
       validate: 'optional',
       title: 'Last two. These answers outrank any pattern in the earlier pages.',
-      prompt: 'Short answers are completely fine.',
+      prompt: 'Short answers are completely fine. Leave either blank if you genuinely have no preference.',
       body: `<div class="long-form">
         <label for="q13-love"><strong>I would love it if these answers somehow turned into…</strong><span>Any type of person, personality, relationship, memorable ability, scene, or vague feeling.</span></label>
         <textarea id="q13-love" name="q13_love" rows="5"></textarea>
@@ -289,9 +276,11 @@
     }
   ];
 
+  const densePages = new Set([3, 4, 5, 7, 8, 9, 10, 11]);
+
   pages.forEach(page => {
     const section = document.createElement('section');
-    section.className = `sheet next${page.page === 3 || page.page === 8 || page.page === 9 || page.page === 11 ? ' dense' : ''}`;
+    section.className = `sheet next${densePages.has(page.page) ? ' dense' : ''}`;
     section.dataset.page = String(page.page);
     section.dataset.validate = page.validate;
     if (page.min != null) section.dataset.min = String(page.min);
@@ -302,7 +291,6 @@
       <div class="sheet-face sheet-front">
         <p class="form-code">${page.code}</p>
         <div class="question-number">Inquiry ${page.question}</div>
-        <div class="classification-code">${page.classification}</div>
         <h2 id="q${page.page}-heading">${page.title}</h2>
         <p class="prompt">${page.prompt}</p>
         ${page.body}
@@ -328,11 +316,7 @@
       <p>Your responses remain attached to this examination record for review.</p>
       <div class="examiner-note">
         <b>EXAMINER'S NOTE</b>
-        <p>Do not infer a single classification from isolated answers. Repeated preferences, contradictions, and the subject’s final statement are all material.</p>
-      </div>
-      <div class="classification-rubric compact-rubric" aria-hidden="true">
-        <span class="rubric-label">POSSIBLE CLASSIFICATIONS</span>
-        <span>CIVIC</span><span>EXPEDITIONARY</span><span>COVERT</span><span>TECHNICAL</span><span>PROTECTIVE</span><span>IRREGULAR</span>
+        <p>Repeated preferences, contradictions, and the subject’s final statement are all material. No single answer should be treated as decisive.</p>
       </div>
       <div class="sheet-actions">
         <button class="secondary back-button" type="button">Previous Sheet</button>
