@@ -83,16 +83,27 @@ fieldset label:has(input[type='radio']:checked) {
   gap: 8px;
 }
 
+/* The disposition question is an A/B comparison. Use flex rather than grid so
+   mobile Safari cannot collapse the two choices into separate full-width rows. */
 .pair-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex !important;
+  flex-flow: row nowrap !important;
   gap: 10px;
+  width: 100%;
 }
 
-.pair-row label {
+.pair-row > label {
+  flex: 1 1 0 !important;
+  width: 0;
+  min-width: 0;
   min-height: 52px;
   align-items: center;
   border-color: rgba(96, 80, 55, .20);
+}
+
+.pair-row > label > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .short-options {
@@ -223,13 +234,14 @@ fieldset label:has(input[type='radio']:checked) {
 
 @media (max-width: 760px) {
   .pair-row {
-    grid-template-columns: 1fr 1fr;
     gap: 6px;
   }
 
-  .pair-row label {
+  .pair-row > label {
+    min-height: 48px;
     padding: 8px;
     font-size: .87rem;
+    line-height: 1.18;
   }
 
   .dense fieldset > label {
@@ -272,22 +284,45 @@ fieldset label:has(input[type='radio']:checked) {
     margin-top: 12px;
     margin-bottom: 40px;
   }
-}
 
-@media (max-width: 440px) {
-  /* Keep the disposition pairs side-by-side even on narrow portrait phones.
-     They are binary comparisons, so collapsing them into a single column
-     obscures the intended A-versus-B presentation. */
-  .pair-row {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  /* Sheet VII / disposition: preserve the binary comparison and keep the
+     complete eight-pair matrix inside the portrait paper. */
+  .sheet[data-page='6'] .pair-matrix {
+    gap: 5px;
+    margin-top: 14px;
+  }
+
+  .sheet[data-page='6'] .pair-row {
     gap: 5px;
   }
 
-  .pair-row label {
+  .sheet[data-page='6'] .pair-row > label {
     min-height: 44px;
-    padding: 6px;
-    font-size: .78rem;
-    line-height: 1.16;
+    padding: 6px 7px;
+    font-size: .80rem;
+    line-height: 1.12;
+  }
+
+  .sheet[data-page='6'] .validation {
+    margin-top: 8px;
+  }
+
+  .sheet[data-page='6'] .sheet-actions {
+    margin-top: 12px;
+    margin-bottom: 38px;
+  }
+}
+
+@media (max-width: 440px) {
+  .pair-row {
+    gap: 4px;
+  }
+
+  .pair-row > label {
+    min-height: 42px;
+    padding: 5px;
+    font-size: .76rem;
+    line-height: 1.10;
   }
 
   .pair-row input[type='radio'] {
@@ -306,5 +341,48 @@ fieldset label:has(input[type='radio']:checked) {
 
   .sheet[data-page='3'] fieldset > label {
     font-size: .80rem;
+  }
+
+  .sheet[data-page='6'] .sheet-front {
+    padding-top: 36px !important;
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-bottom: 88px !important;
+  }
+
+  .sheet[data-page='6'] .form-code,
+  .sheet[data-page='6'] .question-number {
+    margin-bottom: 10px;
+  }
+
+  .sheet[data-page='6'] h2 {
+    margin-bottom: 10px;
+    font-size: 1.48rem;
+  }
+
+  .sheet[data-page='6'] .prompt {
+    margin-top: 0;
+    margin-bottom: 8px;
+  }
+
+  .sheet[data-page='6'] .pair-row > label {
+    min-height: 40px;
+    padding: 5px;
+    font-size: .72rem;
+  }
+
+  .sheet[data-page='6'] .sheet-actions {
+    flex-wrap: nowrap;
+    gap: 8px;
+    margin-top: 8px;
+    margin-bottom: 30px;
+  }
+
+  .sheet[data-page='6'] .sheet-actions button {
+    flex: 1 1 0;
+    min-width: 0;
+    padding-left: 8px;
+    padding-right: 8px;
+    font-size: .78rem;
   }
 }
