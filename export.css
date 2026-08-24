@@ -1,4 +1,4 @@
-/* Local review/export controls. Kept separate from the approved survey layout. */
+/* Review/export controls. Kept separate from the approved survey layout. */
 
 .subject-line {
   vertical-align: bottom;
@@ -25,6 +25,17 @@
   box-shadow: 0 2px 0 rgba(78, 61, 39, .35);
 }
 
+.delivery-notice {
+  margin: 24px 0 0;
+  padding: 12px 14px;
+  border-top: 1px solid rgba(96,81,57,.38);
+  border-bottom: 1px solid rgba(96,81,57,.38);
+  color: var(--muted);
+  font-size: .88rem;
+  font-style: italic;
+  line-height: 1.45;
+}
+
 .export-panel {
   margin: 22px 0 8px;
   padding: 16px 18px 12px;
@@ -46,7 +57,11 @@
 }
 
 .export-actions button {
-  flex: 1 1 180px;
+  flex: 1 1 160px;
+}
+
+.export-actions button[hidden] {
+  display: none !important;
 }
 
 .export-status {
@@ -55,6 +70,14 @@
   color: var(--muted);
   font-size: .84rem;
   font-style: italic;
+}
+
+.export-status[data-state='success'] {
+  font-weight: 700;
+}
+
+.export-status[data-state='error'] {
+  color: var(--red);
 }
 
 .completion-sheet .export-panel + .sheet-actions {
@@ -71,6 +94,12 @@
     display: inline-block;
     width: min(260px, calc(100% - 72px));
     min-width: 0;
+  }
+
+  .delivery-notice {
+    margin-top: 18px;
+    padding: 10px 11px;
+    font-size: .82rem;
   }
 
   .export-panel {
