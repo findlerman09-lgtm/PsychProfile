@@ -14,10 +14,10 @@ Development reference only. This file distinguishes real institutional history f
 - Stone House Farm was acquired in 1887.
 
 **LOCKED PROTOTYPE USE**
-- Use `City of London Lunatic Asylum` as the visible institutional identity for the survey experience.
+- Player-facing material refers to the institution only as `C.L.L.A.`; the full historical name remains development-only context.
 - Use `Stone, near Dartford, Kent` as the location line.
 - `Corporation of London` may appear as institutional authority/letterhead language.
-- The design value is a subtle `City of London` breadcrumb that may acquire significance only after the campaign begins.
+- The acronym is deliberately unexplained to players and may acquire significance only after the campaign begins.
 - Do not add Whitechapel, Jack the Ripper, Mitre Square, September 1888, supernatural terminology, or other overt campaign reveals to the player-facing survey.
 
 ## Alternate institutions researched but not selected
@@ -44,9 +44,10 @@ The following are **FICTIONAL INSERTIONS** unless later research establishes an 
 - `Preliminary Personal Examination`
 - examiner instructions shown in the prototype
 - `CONFIDENTIAL`, `UNASSESSED`, `IN EXAMINATION`, and similar workflow stamps/statuses as presented by the site
-- the assessment-domain and classification language (`CIVIC`, `EXPEDITIONARY`, `COVERT`, `TECHNICAL`, `PROTECTIVE`, `IRREGULAR`, and related page codes)
 
-The assessment-domain language is deliberate **genre misdirection**. It is intended to keep the eventual game identity ambiguous by plausibly suggesting several kinds of adventure or role-playing campaign without naming any specific game system. It does not represent a historical City of London Lunatic Asylum classification scheme and must not be cited or presented as authentic institutional practice.
+### Rejected prototype element
+
+The assessment-domain/classification scheme (`CIVIC`, `EXPEDITIONARY`, `COVERT`, `TECHNICAL`, `PROTECTIVE`, `IRREGULAR`, and related page classifications) was tested as genre misdirection and rejected. It is no longer part of the player-facing design. Future red herrings should arise more naturally from question wording, incidental administrative details, or presentation rather than from an explicit taxonomy.
 
 The former prototype name `The Institute for Personal Observation` was fictional and has been retired from player-facing use.
 
