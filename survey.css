@@ -155,6 +155,40 @@ fieldset label:has(input[type='radio']:checked) {
   margin-bottom: 22px;
 }
 
+/* Sheet IV has the longest aptitude list. Keep its full top treatment, but
+   tighten only the answer block so its navigation stays physically on the
+   sheet instead of spilling below the paper edge. */
+.sheet[data-page='3'] fieldset {
+  gap: 4px;
+  margin-top: 16px;
+}
+
+.sheet[data-page='3'] fieldset > label {
+  min-height: 35px;
+  padding: 6px 10px;
+  font-size: .90rem;
+  line-height: 1.28;
+}
+
+.sheet[data-page='3'] .writein-option {
+  padding-bottom: 7px;
+}
+
+.sheet[data-page='3'] .write-in {
+  min-height: 27px;
+  margin-top: 1px;
+}
+
+.sheet[data-page='3'] .validation {
+  min-height: 18px;
+  margin-top: 8px;
+}
+
+.sheet[data-page='3'] .sheet-actions {
+  margin-top: 14px;
+  margin-bottom: 42px;
+}
+
 /* Reserve a real footer zone on every questionnaire sheet. The folio is
    centered in that zone and navigation remains above it, so a long answer set
    cannot put a button on top of the sheet number. */
@@ -214,6 +248,17 @@ fieldset label:has(input[type='radio']:checked) {
   .sheet-actions {
     margin-bottom: 46px;
   }
+
+  .sheet[data-page='3'] fieldset > label {
+    min-height: 32px;
+    padding: 5px 8px;
+    font-size: .84rem;
+  }
+
+  .sheet[data-page='3'] .sheet-actions {
+    margin-top: 12px;
+    margin-bottom: 40px;
+  }
 }
 
 @media (max-width: 440px) {
@@ -227,5 +272,9 @@ fieldset label:has(input[type='radio']:checked) {
 
   .sheet-actions {
     margin-bottom: 52px;
+  }
+
+  .sheet[data-page='3'] fieldset > label {
+    font-size: .80rem;
   }
 }
