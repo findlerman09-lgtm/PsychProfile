@@ -1,46 +1,13 @@
-/* Full survey controls and subtle genre-misdirection classification cues. */
+/* Full survey controls. */
 
 button, input, textarea, select { font: inherit; }
 
-.classification-rubric {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 7px 10px;
-  margin: 28px 0 22px;
-  padding: 14px 16px;
-  border-top: 1px solid rgba(93, 76, 51, .44);
-  border-bottom: 1px solid rgba(93, 76, 51, .44);
-  color: var(--muted);
-  font-size: .69rem;
-  font-weight: 700;
-  letter-spacing: .105em;
-  text-align: center;
-}
-
-.classification-rubric .rubric-label {
-  grid-column: 1 / -1;
-  margin-bottom: 2px;
-  color: var(--ink);
-  font-size: .64rem;
-  letter-spacing: .16em;
-}
-
-.compact-rubric {
-  margin-top: 30px;
-  opacity: .72;
-}
-
+/* The earlier assessment-domain taxonomy was too overt and read like a game
+   classification system. Keep any residual generated markup out of the player
+   experience while we reconsider red herrings in a more natural form. */
+.classification-rubric,
 .classification-code {
-  position: absolute;
-  top: 56px;
-  right: 56px;
-  max-width: 44%;
-  color: rgba(92, 73, 48, .62);
-  font-size: .61rem;
-  font-weight: 700;
-  letter-spacing: .12em;
-  line-height: 1.35;
-  text-align: right;
+  display: none !important;
 }
 
 input[type='radio'] {
@@ -170,19 +137,27 @@ fieldset label:has(input[type='radio']:checked) {
   margin-bottom: 24px;
 }
 
+/* Reserve a real footer zone on every questionnaire sheet. The folio is
+   centered in that zone and navigation remains above it, so a long answer set
+   cannot put a button on top of the sheet number. */
+.sheet-front {
+  padding-bottom: 112px !important;
+}
+
+.sheet-actions {
+  margin-bottom: 50px;
+}
+
+.folio {
+  left: 24px !important;
+  right: 24px !important;
+  bottom: 20px !important;
+  width: auto;
+  text-align: center;
+  pointer-events: none;
+}
+
 @media (max-width: 760px) {
-  .classification-code {
-    position: static;
-    max-width: none;
-    margin: -4px 0 12px;
-    text-align: left;
-  }
-
-  .classification-rubric {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    font-size: .61rem;
-  }
-
   .pair-row {
     gap: 6px;
   }
@@ -200,6 +175,14 @@ fieldset label:has(input[type='radio']:checked) {
   .long-form textarea {
     min-height: 118px;
   }
+
+  .sheet-front {
+    padding-bottom: 102px !important;
+  }
+
+  .sheet-actions {
+    margin-bottom: 46px;
+  }
 }
 
 @media (max-width: 440px) {
@@ -207,12 +190,11 @@ fieldset label:has(input[type='radio']:checked) {
     grid-template-columns: 1fr;
   }
 
-  .classification-rubric {
-    gap: 6px;
-    padding-inline: 8px;
-  }
-
   .dense fieldset > label {
     font-size: .84rem;
+  }
+
+  .sheet-actions {
+    margin-bottom: 52px;
   }
 }
