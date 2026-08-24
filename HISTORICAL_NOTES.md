@@ -13,11 +13,10 @@ Development reference only. This file distinguishes real institutional history f
 - The original institution used a corridor-plan building with separate male and female wings.
 - Stone House Farm was acquired in 1887.
 
-**LOCKED PROTOTYPE USE**
-- Player-facing material refers to the institution only as `C.L.L.A.`; the full historical name remains development-only context.
-- Use `Stone, near Dartford, Kent` as the location line.
-- `Corporation of London` may appear as institutional authority/letterhead language.
-- The acronym is deliberately unexplained to players and may acquire significance only after the campaign begins.
+**LOCKED PLAYER-FACING USE**
+- Player-facing material refers to the institution only as `C.L.L.A.`; the acronym is not expanded on the site.
+- The full historical institutional name, `Stone, near Dartford, Kent`, and `Corporation of London` remain development-only context unless the PM later explicitly restores one of them.
+- The unexplained acronym is intentional and may acquire significance only after the campaign begins.
 - Do not add Whitechapel, Jack the Ripper, Mitre Square, September 1888, supernatural terminology, or other overt campaign reveals to the player-facing survey.
 
 ## Alternate institutions researched but not selected
@@ -45,9 +44,11 @@ The following are **FICTIONAL INSERTIONS** unless later research establishes an 
 - examiner instructions shown in the prototype
 - `CONFIDENTIAL`, `UNASSESSED`, `IN EXAMINATION`, and similar workflow stamps/statuses as presented by the site
 
-### Rejected prototype element
+### Survey misdirection policy
 
-The assessment-domain/classification scheme (`CIVIC`, `EXPEDITIONARY`, `COVERT`, `TECHNICAL`, `PROTECTIVE`, `IRREGULAR`, and related page classifications) was tested as genre misdirection and rejected. It is no longer part of the player-facing design. Future red herrings should arise more naturally from question wording, incidental administrative details, or presentation rather than from an explicit taxonomy.
+The explicit assessment-domain/classification scheme (`CIVIC`, `EXPEDITIONARY`, `COVERT`, `TECHNICAL`, `PROTECTIVE`, `IRREGULAR`, and related page classifications) was tested and rejected. It is not part of the player-facing design.
+
+Genre ambiguity should instead arise from **useful character questions whose answer choices plausibly fit several different kinds of game**. Current examples deliberately include surveillance, cover identities, guarded access, technical systems, protection, dangerous pursuit, old inscriptions, artifacts, ruins, travel, and specialist lore. Every such option must still provide actionable information for building a historically plausible human investigator; misdirection is secondary to character fit.
 
 The former prototype name `The Institute for Personal Observation` was fictional and has been retired from player-facing use.
 
