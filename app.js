@@ -55,12 +55,27 @@
     });
   }
 
+  function settleSheets() {
+    sheets.forEach((sheet, index) => {
+      sheet.classList.remove('turned', 'current', 'next', 'returning', 'parked');
+
+      if (index < currentPage) {
+        sheet.classList.add('turned');
+        if (index === currentPage - 1) sheet.classList.add('parked');
+      } else if (index === currentPage) {
+        sheet.classList.add('current');
+      } else {
+        sheet.classList.add('next');
+      }
+    });
+  }
+
   function transitionDelay(callback) {
     if (reduceMotion.matches) {
       requestAnimationFrame(callback);
       return;
     }
-    window.setTimeout(callback, 930);
+    window.setTimeout(callback, 1180);
   }
 
   function turnForward() {
@@ -70,28 +85,20 @@
     const arriving = sheets[currentPage + 1];
     animating = true;
 
-    arriving.classList.remove('next', 'returning');
+    /* The incoming sheet is already underneath. The outgoing sheet curls over
+       it; after the curl finishes its blank reverse remains parked above. */
+    arriving.classList.remove('next', 'returning', 'turned', 'parked');
     arriving.classList.add('current');
     arriving.setAttribute('aria-hidden', 'false');
-    leaving.classList.remove('current');
+
+    leaving.classList.remove('current', 'parked', 'returning');
     leaving.classList.add('turned');
 
     currentPage += 1;
     updateChrome();
 
     transitionDelay(() => {
-      sheets.forEach((sheet, index) => {
-        if (index < currentPage) {
-          sheet.classList.add('turned');
-          sheet.classList.remove('current', 'next', 'returning');
-        } else if (index === currentPage) {
-          sheet.classList.add('current');
-          sheet.classList.remove('turned', 'next', 'returning');
-        } else {
-          sheet.classList.add('next');
-          sheet.classList.remove('turned', 'current', 'returning');
-        }
-      });
+      settleSheets();
       setAriaState();
       focusSheet(currentPage);
       animating = false;
@@ -107,26 +114,18 @@
 
     leaving.classList.remove('current');
     leaving.classList.add('next');
+
+    /* Release the previous page from its parked position and let it uncurl
+       downward over the sheet that was current. */
+    arriving.classList.remove('turned', 'parked', 'current', 'next');
     arriving.classList.add('returning');
-    arriving.classList.remove('turned');
     arriving.setAttribute('aria-hidden', 'false');
 
     currentPage -= 1;
     updateChrome();
 
     transitionDelay(() => {
-      sheets.forEach((sheet, index) => {
-        if (index < currentPage) {
-          sheet.classList.add('turned');
-          sheet.classList.remove('current', 'next', 'returning');
-        } else if (index === currentPage) {
-          sheet.classList.add('current');
-          sheet.classList.remove('turned', 'next', 'returning');
-        } else {
-          sheet.classList.add('next');
-          sheet.classList.remove('turned', 'current', 'returning');
-        }
-      });
+      settleSheets();
       setAriaState();
       focusSheet(currentPage);
       animating = false;
@@ -211,10 +210,7 @@
     });
 
     currentPage = 0;
-    sheets.forEach((sheet, index) => {
-      sheet.classList.remove('turned', 'current', 'next', 'returning');
-      sheet.classList.add(index === 0 ? 'current' : 'next');
-    });
+    settleSheets();
     makeFileNumber();
     updateChrome();
     setAriaState();
@@ -223,5 +219,6 @@
 
   makeFileNumber();
   updateChrome();
+  settleSheets();
   setAriaState();
 })();
