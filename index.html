@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="styles.css?v=6">
   <link rel="stylesheet" href="paper.css?v=7">
   <link rel="stylesheet" href="theme.css?v=1">
+  <link rel="stylesheet" href="survey.css?v=1">
 </head>
 <body>
   <main class="desk-shell">
@@ -60,7 +61,7 @@
               <h2 id="q1-heading">You arrive somewhere knowing that something important happened there.</h2>
               <p class="prompt">Several things immediately compete for your attention. Pick the <strong>two</strong> you would most want to pursue.</p>
               <fieldset data-max="2">
-                <legend class="sr-only">Choose up to two responses</legend>
+                <legend class="sr-only">Choose exactly two responses</legend>
                 <label><input type="checkbox" name="q1" value="physical-detail"> <span>A tiny physical detail everyone else seems to have ignored</span></label>
                 <label><input type="checkbox" name="q1" value="nervous-person"> <span>A nervous person who clearly knows more than they are saying</span></label>
                 <label><input type="checkbox" name="q1" value="documents"> <span>A pile of letters, records, receipts, or other documents</span></label>
@@ -85,7 +86,7 @@
               <h2 id="q2-heading">Someone who may know something important is leaving in thirty minutes.</h2>
               <p class="prompt">What sounds most satisfying? Pick up to <strong>two</strong>.</p>
               <fieldset data-max="2">
-                <legend class="sr-only">Choose up to two responses</legend>
+                <legend class="sr-only">Choose one or two responses</legend>
                 <label><input type="checkbox" name="q2" value="interview"> <span>Sit them down and get the truth out of them</span></label>
                 <label><input type="checkbox" name="q2" value="follow"> <span>Quietly follow them</span></label>
                 <label><input type="checkbox" name="q2" value="search"> <span>Search for something they may have left behind</span></label>
@@ -108,16 +109,8 @@
             <div class="sheet-face sheet-front completion-sheet">
               <p class="form-code">FORM 7-B · DEVELOPMENT COPY</p>
               <div class="stamp">PROTOTYPE</div>
-              <h2 id="prototype-heading">Initial Examination Sequence Complete</h2>
-              <p>The page-turn system and first two inquiry sheets are active. The remaining examination pages will be added after the interaction and visual treatment are approved.</p>
-              <div class="examiner-note">
-                <b>EXAMINER'S NOTE</b>
-                <p>Observe without leading the subject. Avoid explanation of classification. Record hesitation where notable.</p>
-              </div>
-              <div class="sheet-actions">
-                <button class="secondary back-button" type="button">Previous Sheet</button>
-                <button class="primary" type="button" id="restart-button">Restart Prototype</button>
-              </div>
+              <h2 id="prototype-heading">Loading Examination Sequence</h2>
+              <p>This placeholder is replaced by the remaining inquiry sheets before the examination begins.</p>
               <p class="folio">Development Sheet</p>
             </div>
             <div class="sheet-face sheet-back" aria-hidden="true"></div>
@@ -126,12 +119,13 @@
 
         <footer class="file-footer">
           <span>For private administrative use only</span>
-          <span id="progress-label">Sheet I of III</span>
+          <span id="progress-label">Sheet I</span>
         </footer>
       </div>
     </section>
   </main>
 
-  <script src="app.js?v=8"></script>
+  <script src="questions.js?v=1"></script>
+  <script src="app.js?v=9"></script>
 </body>
 </html>
