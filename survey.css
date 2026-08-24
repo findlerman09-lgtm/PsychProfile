@@ -1,0 +1,218 @@
+/* Full survey controls and subtle genre-misdirection classification cues. */
+
+button, input, textarea, select { font: inherit; }
+
+.classification-rubric {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px 10px;
+  margin: 28px 0 22px;
+  padding: 14px 16px;
+  border-top: 1px solid rgba(93, 76, 51, .44);
+  border-bottom: 1px solid rgba(93, 76, 51, .44);
+  color: var(--muted);
+  font-size: .69rem;
+  font-weight: 700;
+  letter-spacing: .105em;
+  text-align: center;
+}
+
+.classification-rubric .rubric-label {
+  grid-column: 1 / -1;
+  margin-bottom: 2px;
+  color: var(--ink);
+  font-size: .64rem;
+  letter-spacing: .16em;
+}
+
+.compact-rubric {
+  margin-top: 30px;
+  opacity: .72;
+}
+
+.classification-code {
+  position: absolute;
+  top: 56px;
+  right: 56px;
+  max-width: 44%;
+  color: rgba(92, 73, 48, .62);
+  font-size: .61rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  line-height: 1.35;
+  text-align: right;
+}
+
+input[type='radio'] {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
+  margin: 1px 0 0;
+  accent-color: #3d352a;
+}
+
+fieldset label:has(input[type='radio']:checked) {
+  background: rgba(77,64,44,.075);
+  border-color: rgba(77,64,44,.26);
+}
+
+.writein-option {
+  flex-wrap: wrap;
+}
+
+.choice-line {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.write-in,
+.long-form textarea {
+  width: 100%;
+  color: var(--ink);
+  background:
+    repeating-linear-gradient(to bottom,
+      transparent 0 27px,
+      rgba(103, 84, 57, .28) 27px 28px);
+  border: 0;
+  border-bottom: 1px solid rgba(103, 84, 57, .45);
+  border-radius: 0;
+  outline: none;
+}
+
+.write-in {
+  min-height: 34px;
+  margin: 6px 0 0 32px;
+  width: calc(100% - 32px);
+  padding: 5px 4px 4px;
+  background-position-y: 6px;
+}
+
+.write-in:disabled {
+  opacity: .38;
+  cursor: not-allowed;
+}
+
+.write-in:not(:disabled):focus,
+.long-form textarea:focus {
+  background-color: rgba(255,255,255,.12);
+  box-shadow: 0 2px 0 rgba(78, 61, 39, .35);
+}
+
+.pair-matrix {
+  gap: 8px;
+}
+
+.pair-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.pair-row label {
+  min-height: 52px;
+  align-items: center;
+  border-color: rgba(96, 80, 55, .20);
+}
+
+.short-options {
+  margin-top: 34px;
+}
+
+.long-form {
+  display: grid;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+.long-form label {
+  display: grid;
+  gap: 5px;
+  margin-top: 10px;
+  line-height: 1.35;
+}
+
+.long-form label span {
+  color: var(--muted);
+  font-size: .9rem;
+  font-style: italic;
+}
+
+.long-form textarea {
+  min-height: 126px;
+  padding: 6px 5px;
+  resize: vertical;
+  line-height: 28px;
+}
+
+.dense fieldset {
+  gap: 6px;
+  margin-top: 20px;
+}
+
+.dense fieldset > label {
+  min-height: 40px;
+  padding: 8px 10px;
+  font-size: .94rem;
+}
+
+.dense .writein-option {
+  padding-bottom: 10px;
+}
+
+.dense .write-in {
+  min-height: 30px;
+  margin-top: 2px;
+}
+
+.completion-sheet .examiner-note {
+  margin-bottom: 24px;
+}
+
+@media (max-width: 760px) {
+  .classification-code {
+    position: static;
+    max-width: none;
+    margin: -4px 0 12px;
+    text-align: left;
+  }
+
+  .classification-rubric {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    font-size: .61rem;
+  }
+
+  .pair-row {
+    gap: 6px;
+  }
+
+  .pair-row label {
+    padding: 8px;
+    font-size: .87rem;
+  }
+
+  .dense fieldset > label {
+    min-height: 36px;
+    font-size: .88rem;
+  }
+
+  .long-form textarea {
+    min-height: 118px;
+  }
+}
+
+@media (max-width: 440px) {
+  .pair-row {
+    grid-template-columns: 1fr;
+  }
+
+  .classification-rubric {
+    gap: 6px;
+    padding-inline: 8px;
+  }
+
+  .dense fieldset > label {
+    font-size: .84rem;
+  }
+}
