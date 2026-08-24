@@ -271,8 +271,7 @@ fieldset label:has(input[type='radio']:checked) {
   }
 
   /* Give the absolute folio and the flow-positioned navigation separate lanes.
-     A small opposing shift is enough to prevent dense mobile pages from letting
-     labels such as “Sheet VI” sit on top of the buttons. */
+     Most mobile sheets only need a small opposing shift. */
   .folio {
     bottom: 9px !important;
   }
@@ -321,9 +320,12 @@ fieldset label:has(input[type='radio']:checked) {
     margin-bottom: 38px;
   }
 
-  /* Sheet IX / liability is another dense portrait page. Do not reserve a
-     blank ruled write-in until Other is actually selected, and keep the
-     navigation clearly above the absolute folio. */
+  /* Sheet IX / liability: the buttons and folio use fixed, non-overlapping
+     footer lanes. This avoids Safari's flow/absolute-position collision. */
+  .sheet[data-page='8'] .sheet-front {
+    padding-bottom: 150px !important;
+  }
+
   .sheet[data-page='8'] .write-in:disabled {
     display: none;
   }
@@ -337,9 +339,25 @@ fieldset label:has(input[type='radio']:checked) {
   }
 
   .sheet[data-page='8'] .sheet-actions {
-    top: -28px;
-    margin-top: 10px;
-    margin-bottom: 64px;
+    position: absolute;
+    left: 18px;
+    right: 18px;
+    bottom: 54px;
+    top: auto;
+    z-index: 3;
+    margin: 0;
+    flex-wrap: nowrap;
+    gap: 10px;
+  }
+
+  .sheet[data-page='8'] .sheet-actions button {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .sheet[data-page='8'] .folio {
+    bottom: 16px !important;
+    z-index: 4;
   }
 }
 
@@ -421,9 +439,25 @@ fieldset label:has(input[type='radio']:checked) {
     font-size: .78rem;
   }
 
+  .sheet[data-page='8'] .sheet-front {
+    padding-bottom: 142px !important;
+  }
+
   .sheet[data-page='8'] .sheet-actions {
-    top: -34px;
-    margin-top: 8px;
-    margin-bottom: 70px;
+    left: 14px;
+    right: 14px;
+    bottom: 50px;
+    top: auto;
+    gap: 8px;
+  }
+
+  .sheet[data-page='8'] .sheet-actions button {
+    padding-left: 8px;
+    padding-right: 8px;
+    font-size: .86rem;
+  }
+
+  .sheet[data-page='8'] .folio {
+    bottom: 13px !important;
   }
 }
