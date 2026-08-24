@@ -14,12 +14,26 @@
   const STRIP_COUNT = 12;
   const TURN_DURATION = 1280;
   const PARK_ANGLE = 138;
+  const completionPage = sheets.length - 1;
 
   let currentPage = 0;
   let animating = false;
   let parkedOverlay = null;
 
-  const roman = ['I', 'II', 'III', 'IV'];
+  function toRoman(number) {
+    const values = [
+      [10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']
+    ];
+    let remaining = number;
+    let result = '';
+    values.forEach(([value, symbol]) => {
+      while (remaining >= value) {
+        result += symbol;
+        remaining -= value;
+      }
+    });
+    return result;
+  }
 
   function makeFileNumber() {
     const n = Math.floor(10000 + Math.random() * 89999);
@@ -29,13 +43,13 @@
   function updateChrome() {
     if (currentPage === 0) {
       statusLabel.textContent = 'UNASSESSED';
-      progressLabel.textContent = 'Sheet I of III';
-    } else if (currentPage < 3) {
+      progressLabel.textContent = `Sheet I of ${toRoman(completionPage)}`;
+    } else if (currentPage < completionPage) {
       statusLabel.textContent = 'IN EXAMINATION';
-      progressLabel.textContent = `Sheet ${roman[currentPage]} of III`;
+      progressLabel.textContent = `Sheet ${toRoman(currentPage + 1)} of ${toRoman(completionPage)}`;
     } else {
       statusLabel.textContent = 'REVIEW PENDING';
-      progressLabel.textContent = 'Development Copy';
+      progressLabel.textContent = 'Review Copy';
     }
   }
 
@@ -93,6 +107,7 @@
   function removeDuplicateIds(root) {
     if (root.id) root.removeAttribute('id');
     root.querySelectorAll('[id]').forEach(node => node.removeAttribute('id'));
+    root.querySelectorAll('[for]').forEach(node => node.removeAttribute('for'));
   }
 
   function createFlipOverlay(sourceSheet) {
@@ -149,9 +164,6 @@
     const eased = easeInOutCubic(p);
     const baseAngle = PARK_ANGLE * eased;
 
-    /* The upper portion still behaves like one hinged sheet. The loose lower
-       half now bends a little more strongly, while retaining a modest curl in
-       the parked state. */
     const movingCurl = Math.sin(Math.PI * p) * 42;
     const parkedCurl = eased * 13;
     const curlAmount = movingCurl + parkedCurl;
@@ -261,32 +273,76 @@
     });
   }
 
-  function selectedCount(name) {
-    return document.querySelectorAll(`input[name="${name}"]:checked`).length;
+  function validationMessage(sheet) {
+    return sheet.querySelector('.validation');
+  }
+
+  function failValidation(sheet, message) {
+    const output = validationMessage(sheet);
+    if (output) output.textContent = message;
+    return false;
+  }
+
+  function clearValidation(sheet) {
+    const output = validationMessage(sheet);
+    if (output) output.textContent = '';
+  }
+
+  function validateWriteIns(sheet) {
+    const selectedTriggers = Array.from(sheet.querySelectorAll('[data-other-target]:checked'));
+    for (const trigger of selectedTriggers) {
+      const target = document.getElementById(trigger.dataset.otherTarget);
+      if (target && !target.value.trim()) {
+        target.focus({ preventScroll: true });
+        return failValidation(sheet, 'Please complete the written response you selected.');
+      }
+    }
+    return true;
   }
 
   function validateCurrentPage() {
-    if (currentPage === 1) {
-      const count = selectedCount('q1');
-      const message = document.getElementById('q1-validation');
-      if (count !== 2) {
-        message.textContent = 'Please mark exactly two responses before turning the sheet.';
-        return false;
+    const sheet = sheets[currentPage];
+    const type = sheet.dataset.validate || 'optional';
+    clearValidation(sheet);
+
+    if (type === 'optional' || type === 'completion') return true;
+
+    if (type === 'checkbox') {
+      const count = sheet.querySelectorAll('input[type="checkbox"]:checked').length;
+      const min = Number(sheet.dataset.min || 1);
+      const max = Number(sheet.dataset.max || min);
+
+      if (min === max && count !== min) {
+        return failValidation(sheet, `Please mark exactly ${min} response${min === 1 ? '' : 's'} before turning the sheet.`);
       }
-      message.textContent = '';
+      if (count < min || count > max) {
+        return failValidation(sheet, `Please mark ${min === 1 ? 'at least one' : `at least ${min}`} and no more than ${max} responses before turning the sheet.`);
+      }
     }
 
-    if (currentPage === 2) {
-      const count = selectedCount('q2');
-      const message = document.getElementById('q2-validation');
-      if (count < 1 || count > 2) {
-        message.textContent = 'Please mark one or two responses before turning the sheet.';
-        return false;
+    if (type === 'radio') {
+      if (!sheet.querySelector('input[type="radio"]:checked')) {
+        return failValidation(sheet, 'Please mark one response before turning the sheet.');
       }
-      message.textContent = '';
     }
 
-    return true;
+    if (type === 'radio-count') {
+      const count = sheet.querySelectorAll('input[type="radio"]:checked').length;
+      const required = Number(sheet.dataset.min || 1);
+      if (count !== required) {
+        return failValidation(sheet, 'Please mark one response in each pair before turning the sheet.');
+      }
+    }
+
+    return validateWriteIns(sheet);
+  }
+
+  function syncConditionalInputs() {
+    document.querySelectorAll('[data-other-target]').forEach(trigger => {
+      const target = document.getElementById(trigger.dataset.otherTarget);
+      if (!target) return;
+      target.disabled = !trigger.checked;
+    });
   }
 
   document.querySelectorAll('fieldset[data-max]').forEach(fieldset => {
@@ -296,16 +352,33 @@
     inputs.forEach(input => {
       input.addEventListener('change', () => {
         const checked = inputs.filter(item => item.checked);
-        const validation = fieldset.parentElement.querySelector('.validation');
+        const sheet = fieldset.closest('.sheet');
 
         if (checked.length > max) {
           input.checked = false;
-          if (validation) validation.textContent = `Please choose no more than ${max} responses.`;
+          syncConditionalInputs();
+          failValidation(sheet, `Please choose no more than ${max} responses.`);
           return;
         }
 
-        if (validation) validation.textContent = '';
+        clearValidation(sheet);
+        syncConditionalInputs();
       });
+    });
+  });
+
+  document.querySelectorAll('input[type="radio"]').forEach(input => {
+    input.addEventListener('change', () => {
+      const sheet = input.closest('.sheet');
+      clearValidation(sheet);
+      syncConditionalInputs();
+    });
+  });
+
+  document.querySelectorAll('.write-in, .long-form textarea').forEach(input => {
+    input.addEventListener('input', () => {
+      const sheet = input.closest('.sheet');
+      clearValidation(sheet);
     });
   });
 
@@ -329,8 +402,11 @@
     if (animating) return;
 
     removeParkedOverlay();
-    document.querySelectorAll('input[type="checkbox"]').forEach(input => {
+    document.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(input => {
       input.checked = false;
+    });
+    document.querySelectorAll('.write-in, .long-form textarea').forEach(input => {
+      input.value = '';
     });
     acknowledge.checked = false;
     beginButton.disabled = true;
@@ -338,6 +414,7 @@
       message.textContent = '';
     });
 
+    syncConditionalInputs();
     currentPage = 0;
     settleSheets();
     makeFileNumber();
@@ -347,6 +424,7 @@
   });
 
   makeFileNumber();
+  syncConditionalInputs();
   updateChrome();
   settleSheets();
   setAriaState();
