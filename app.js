@@ -112,7 +112,7 @@
 
   function createFlipOverlay(sourceSheet) {
     const sourceFace = sourceSheet.querySelector('.sheet-front');
-    const pageHeight = sourceSheet.offsetHeight;
+    const pageHeight = book.offsetHeight;
     const sliceHeight = pageHeight / STRIP_COUNT;
 
     const overlay = document.createElement('div');
