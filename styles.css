@@ -29,7 +29,7 @@ button { cursor: pointer; }
 button:disabled { cursor: not-allowed; opacity: .48; }
 
 .desk-shell {
-  width: min(1180px, calc(100% - 28px));
+  width: min(1040px, calc(100% - 28px));
   margin: 34px auto 56px;
 }
 
@@ -151,51 +151,57 @@ h1 {
   font-weight: 700;
 }
 
+/* Legal-paper-inspired portrait stack: approximately 8.5 × 14 proportions. */
 .book-wrap {
   position: relative;
   z-index: 2;
-  width: min(820px, 100%);
-  min-height: 620px;
+  width: min(700px, 100%);
+  min-height: 1150px;
   margin: 0 auto;
-  perspective: 2200px;
+  perspective: 2400px;
+  perspective-origin: 50% 18%;
 }
 
 .paper-stack {
   position: absolute;
-  inset: 10px -8px -8px 10px;
+  inset: 9px -6px -10px 7px;
   background: var(--paper-deep);
   border: 1px solid #8d8065;
-  box-shadow: 10px 14px 22px rgba(42,32,19,.16);
-  transform: rotate(.35deg);
+  box-shadow: 10px 16px 24px rgba(42,32,19,.17);
+  transform: rotate(.16deg);
 }
 .paper-stack::before,
 .paper-stack::after {
   content: '';
   position: absolute;
-  inset: -6px 5px 6px -5px;
+  inset: -5px 5px 6px -5px;
   background: #dfd3b5;
   border: 1px solid rgba(91,77,54,.42);
   z-index: -1;
-  transform: rotate(-.25deg);
+  transform: rotate(-.12deg);
 }
 .paper-stack::after {
   inset: 6px -5px -5px 6px;
-  transform: rotate(.16deg);
+  transform: rotate(.1deg);
 }
 
 .sheet {
   position: absolute;
   inset: 0;
-  min-height: 620px;
-  transform-origin: left center;
+  min-height: 1150px;
+  transform-origin: top center;
   transform-style: preserve-3d;
   transition: transform 900ms cubic-bezier(.62,.02,.29,1), filter 900ms ease;
   z-index: 1;
 }
 
-.sheet.current { z-index: 8; transform: rotateY(0deg); }
-.sheet.next { z-index: 4; transform: rotateY(0deg); }
-.sheet.turned { z-index: 12; transform: rotateY(-179.4deg); filter: drop-shadow(-16px 12px 10px rgba(24,18,10,.18)); }
+.sheet.current { z-index: 8; transform: rotateX(0deg); }
+.sheet.next { z-index: 4; transform: rotateX(0deg); }
+.sheet.turned {
+  z-index: 12;
+  transform: rotateX(179.4deg);
+  filter: drop-shadow(0 -18px 12px rgba(24,18,10,.2));
+}
 .sheet.returning { z-index: 12; }
 
 .sheet-face {
@@ -211,22 +217,23 @@ h1 {
 }
 
 .sheet-front {
-  padding: clamp(28px, 5vw, 48px) clamp(24px, 6vw, 60px) 54px;
+  padding: 54px 58px 72px;
 }
 
+/* The heavier lower edge helps sell a sheet being lifted upward. */
 .sheet-front::before {
   content: '';
   position: absolute;
-  top: 0;
-  right: 0;
-  width: 22px;
-  height: 100%;
-  background: linear-gradient(to left, rgba(87,67,38,.12), transparent);
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 30px;
+  background: linear-gradient(to top, rgba(87,67,38,.13), transparent);
   pointer-events: none;
 }
 
 .sheet-back {
-  transform: rotateY(180deg);
+  transform: rotateX(180deg);
   display: grid;
   place-items: center;
   background:
@@ -241,7 +248,7 @@ h1 {
   font-size: clamp(1.6rem, 5vw, 3rem);
   font-weight: 700;
   letter-spacing: .14em;
-  transform: rotate(-9deg);
+  transform: rotate(-7deg);
 }
 
 .form-code {
@@ -265,7 +272,7 @@ h1 {
 
 h2 {
   margin: 0 0 18px;
-  max-width: 720px;
+  max-width: 620px;
   font-size: clamp(1.7rem, 3.4vw, 2.45rem);
   line-height: 1.13;
 }
@@ -293,8 +300,8 @@ input[type='checkbox'] {
 
 fieldset {
   display: grid;
-  gap: 9px;
-  margin: 22px 0 0;
+  gap: 12px;
+  margin: 28px 0 0;
   padding: 0;
   border: 0;
 }
@@ -303,8 +310,8 @@ fieldset label {
   display: flex;
   gap: 12px;
   align-items: flex-start;
-  min-height: 44px;
-  padding: 10px 12px;
+  min-height: 48px;
+  padding: 12px 13px;
   border: 1px solid transparent;
   transition: background-color 130ms ease, border-color 130ms ease;
 }
@@ -315,7 +322,7 @@ fieldset label:has(input:checked) {
 
 .validation {
   min-height: 24px;
-  margin: 10px 0 0;
+  margin: 14px 0 0;
   color: var(--red);
   font-size: .9rem;
   font-style: italic;
@@ -325,7 +332,7 @@ fieldset label:has(input:checked) {
   display: flex;
   justify-content: space-between;
   gap: 14px;
-  margin-top: 20px;
+  margin-top: 28px;
 }
 .actions-end { justify-content: flex-end; }
 
@@ -355,7 +362,7 @@ input:focus-visible {
 
 .folio {
   position: absolute;
-  bottom: 18px;
+  bottom: 20px;
   right: 34px;
   margin: 0;
   color: var(--muted);
@@ -363,10 +370,10 @@ input:focus-visible {
   font-style: italic;
 }
 
-.completion-sheet { padding-top: 66px; }
+.completion-sheet { padding-top: 76px; }
 .stamp {
   position: absolute;
-  top: 42px;
+  top: 44px;
   right: 50px;
   padding: 7px 14px;
   border: 4px double var(--red);
@@ -377,11 +384,11 @@ input:focus-visible {
   opacity: .82;
 }
 .examiner-note {
-  margin: 30px 0;
-  padding: 20px;
+  margin: 34px 0;
+  padding: 22px;
   background: #d9cdaa;
   border: 1px solid #938568;
-  transform: rotate(.35deg);
+  transform: rotate(.25deg);
 }
 .examiner-note b { font-size: .78rem; letter-spacing: .12em; }
 .examiner-note p { margin-bottom: 0; color: var(--muted); }
@@ -418,7 +425,7 @@ input:focus-visible {
 }
 
 @media (max-width: 760px) {
-  .desk-shell { width: min(100% - 14px, 1180px); margin-top: 16px; }
+  .desk-shell { width: min(100% - 14px, 1040px); margin-top: 16px; }
   .file-stage { padding-top: 34px; }
   .folder-tab { left: 12px; height: 42px; padding: 13px 16px 0; font-size: .66rem; }
   .file-card { padding: 24px 12px 18px; }
@@ -428,8 +435,8 @@ input:focus-visible {
   .subtitle { font-size: .9rem; }
   .file-meta { grid-template-columns: 1fr 1fr; gap: 10px 14px; padding: 0 8px; font-size: .68rem; }
   .file-meta > span:nth-child(2) { display: none; }
-  .book-wrap, .sheet { min-height: 710px; }
-  .sheet-front { padding: 28px 20px 52px; }
+  .book-wrap, .sheet { min-height: 980px; }
+  .sheet-front { padding: 34px 24px 58px; }
   .sheet-actions { flex-wrap: wrap; }
   .sheet-actions button { flex: 1 1 150px; }
   .file-footer { padding: 12px 8px 0; }
@@ -438,9 +445,9 @@ input:focus-visible {
 @media (max-width: 440px) {
   h1 { font-size: 1.62rem; }
   .eyebrow { font-size: .65rem; }
-  .book-wrap, .sheet { min-height: 780px; }
-  fieldset { gap: 4px; }
-  fieldset label { padding: 8px; font-size: .92rem; }
+  .book-wrap, .sheet { min-height: 1050px; }
+  fieldset { gap: 5px; }
+  fieldset label { padding: 9px; font-size: .92rem; }
   .stamp { position: static; width: fit-content; margin: -14px 0 20px auto; }
   .file-footer { flex-direction: column; gap: 4px; }
 }
@@ -452,5 +459,5 @@ input:focus-visible {
     animation-duration: .001ms !important;
     animation-iteration-count: 1 !important;
   }
-  .sheet.turned { transform: rotateY(-179.4deg); filter: none; }
+  .sheet.turned { transform: rotateX(179.4deg); filter: none; }
 }
