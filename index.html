@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#30291f">
+  <title>Preliminary Case Inquiry</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="desk-shell">
+    <section class="file-stage" aria-label="Confidential personal observation file">
+      <div class="folder-tab" aria-hidden="true">CASE INQUIRY / PRIVATE</div>
+
+      <div class="file-card">
+        <header class="institution-header">
+          <div class="seal" aria-hidden="true">
+            <span class="seal-mark">+</span>
+          </div>
+          <div>
+            <p class="eyebrow">The Institute for</p>
+            <h1>Personal Observation</h1>
+            <p class="subtitle">Confidential Preliminary Case Inquiry</p>
+          </div>
+        </header>
+
+        <div class="file-meta" aria-label="File details">
+          <span><b>FILE NO.</b> <span class="entry-line">P-<span id="file-number">_____</span></span></span>
+          <span><b>SUBJECT</b> <span class="entry-line subject-line">________________</span></span>
+          <span><b>STATUS</b> <span class="status" id="status-label">UNASSESSED</span></span>
+        </div>
+
+        <div class="book-wrap" id="survey-book">
+          <div class="paper-stack" aria-hidden="true"></div>
+
+          <section class="sheet current" data-page="0" aria-labelledby="intro-heading">
+            <div class="sheet-face sheet-front">
+              <p class="form-code">FORM 7-B · INTAKE</p>
+              <h2 id="intro-heading">Preliminary Instructions</h2>
+              <p>You will be presented with a brief series of choices concerning observation, judgment, temperament, and practical instinct.</p>
+              <p>There are no correct answers. Select the responses that feel most natural to you. First impressions are preferred to careful analysis.</p>
+              <label class="acknowledgement">
+                <input type="checkbox" id="acknowledge">
+                <span>I understand that spontaneous answers are preferred.</span>
+              </label>
+              <div class="sheet-actions actions-end">
+                <button class="primary" type="button" id="begin-button" disabled>Begin Examination</button>
+              </div>
+              <p class="folio">Sheet I</p>
+            </div>
+            <div class="sheet-face sheet-back" aria-hidden="true">
+              <div class="reverse-mark">CONFIDENTIAL</div>
+            </div>
+          </section>
+
+          <section class="sheet next" data-page="1" aria-labelledby="q1-heading" aria-hidden="true">
+            <div class="sheet-face sheet-front">
+              <p class="form-code">FORM 7-B · OBSERVATION</p>
+              <div class="question-number">Inquiry I</div>
+              <h2 id="q1-heading">You arrive somewhere knowing that something important happened there.</h2>
+              <p class="prompt">Several things immediately compete for your attention. Pick the <strong>two</strong> you would most want to pursue.</p>
+              <fieldset data-max="2">
+                <legend class="sr-only">Choose up to two responses</legend>
+                <label><input type="checkbox" name="q1" value="physical-detail"> <span>A tiny physical detail everyone else seems to have ignored</span></label>
+                <label><input type="checkbox" name="q1" value="nervous-person"> <span>A nervous person who clearly knows more than they are saying</span></label>
+                <label><input type="checkbox" name="q1" value="documents"> <span>A pile of letters, records, receipts, or other documents</span></label>
+                <label><input type="checkbox" name="q1" value="technical"> <span>Something technical that does not seem to work the way it should</span></label>
+                <label><input type="checkbox" name="q1" value="motive"> <span>The question of who had access, opportunity, and motive</span></label>
+                <label><input type="checkbox" name="q1" value="look-around"> <span>None of those yet — I want to look around and see where the trail leads</span></label>
+              </fieldset>
+              <p class="validation" id="q1-validation" aria-live="polite"></p>
+              <div class="sheet-actions">
+                <button class="secondary back-button" type="button">Previous Sheet</button>
+                <button class="primary next-button" type="button">Turn Page</button>
+              </div>
+              <p class="folio">Sheet II</p>
+            </div>
+            <div class="sheet-face sheet-back" aria-hidden="true">
+              <div class="reverse-mark">CONFIDENTIAL</div>
+            </div>
+          </section>
+
+          <section class="sheet next" data-page="2" aria-labelledby="q2-heading" aria-hidden="true">
+            <div class="sheet-face sheet-front">
+              <p class="form-code">FORM 7-B · JUDGMENT</p>
+              <div class="question-number">Inquiry II</div>
+              <h2 id="q2-heading">Someone who may know something important is leaving in thirty minutes.</h2>
+              <p class="prompt">What sounds most satisfying? Pick up to <strong>two</strong>.</p>
+              <fieldset data-max="2">
+                <legend class="sr-only">Choose up to two responses</legend>
+                <label><input type="checkbox" name="q2" value="interview"> <span>Sit them down and get the truth out of them</span></label>
+                <label><input type="checkbox" name="q2" value="follow"> <span>Quietly follow them</span></label>
+                <label><input type="checkbox" name="q2" value="search"> <span>Search for something they may have left behind</span></label>
+                <label><input type="checkbox" name="q2" value="contacts"> <span>Find someone who knows them and ask questions</span></label>
+                <label><input type="checkbox" name="q2" value="anticipate"> <span>Work out where they are going before they get there</span></label>
+                <label><input type="checkbox" name="q2" value="lure"> <span>Give them a reason to come to me</span></label>
+                <label><input type="checkbox" name="q2" value="confront"> <span>Take the risk and confront them directly</span></label>
+              </fieldset>
+              <p class="validation" id="q2-validation" aria-live="polite"></p>
+              <div class="sheet-actions">
+                <button class="secondary back-button" type="button">Previous Sheet</button>
+                <button class="primary next-button" type="button">Turn Page</button>
+              </div>
+              <p class="folio">Sheet III</p>
+            </div>
+            <div class="sheet-face sheet-back" aria-hidden="true">
+              <div class="reverse-mark">CONFIDENTIAL</div>
+            </div>
+          </section>
+
+          <section class="sheet next" data-page="3" aria-labelledby="prototype-heading" aria-hidden="true">
+            <div class="sheet-face sheet-front completion-sheet">
+              <p class="form-code">FORM 7-B · DEVELOPMENT COPY</p>
+              <div class="stamp">PROTOTYPE</div>
+              <h2 id="prototype-heading">Initial Examination Sequence Complete</h2>
+              <p>The page-turn system and first two inquiry sheets are active. The remaining examination pages will be added after the interaction and visual treatment are approved.</p>
+              <div class="examiner-note">
+                <b>EXAMINER'S NOTE</b>
+                <p>Observe without leading the subject. Avoid explanation of classification. Record hesitation where notable.</p>
+              </div>
+              <div class="sheet-actions">
+                <button class="secondary back-button" type="button">Previous Sheet</button>
+                <button class="primary" type="button" id="restart-button">Restart Prototype</button>
+              </div>
+              <p class="folio">Development Sheet</p>
+            </div>
+            <div class="sheet-face sheet-back" aria-hidden="true">
+              <div class="reverse-mark">CONFIDENTIAL</div>
+            </div>
+          </section>
+        </div>
+
+        <footer class="file-footer">
+          <span>For private administrative use only</span>
+          <span id="progress-label">Sheet I of III</span>
+        </footer>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
