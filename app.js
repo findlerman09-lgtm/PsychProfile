@@ -55,13 +55,19 @@
     });
   }
 
+  /* Only the immediately previous page remains visibly propped up. Older
+     sheets are considered folded back behind it and are hidden from view. */
   function settleSheets() {
     sheets.forEach((sheet, index) => {
-      sheet.classList.remove('turned', 'current', 'next', 'returning', 'parked');
+      sheet.classList.remove(
+        'turned', 'current', 'next', 'returning', 'parked', 'stored',
+        'turning-forward', 'turning-back'
+      );
 
-      if (index < currentPage) {
-        sheet.classList.add('turned');
-        if (index === currentPage - 1) sheet.classList.add('parked');
+      if (index < currentPage - 1) {
+        sheet.classList.add('stored');
+      } else if (index === currentPage - 1) {
+        sheet.classList.add('parked');
       } else if (index === currentPage) {
         sheet.classList.add('current');
       } else {
@@ -85,14 +91,14 @@
     const arriving = sheets[currentPage + 1];
     animating = true;
 
-    /* The incoming sheet is already underneath. The outgoing sheet curls over
-       it; after the curl finishes its blank reverse remains parked above. */
-    arriving.classList.remove('next', 'returning', 'turned', 'parked');
+    /* The next sheet is already lying flat beneath. Lift the entire outgoing
+       sheet from its bound top edge, then leave it propped above the new page. */
+    arriving.classList.remove('next', 'stored', 'parked', 'turning-back');
     arriving.classList.add('current');
     arriving.setAttribute('aria-hidden', 'false');
 
-    leaving.classList.remove('current', 'parked', 'returning');
-    leaving.classList.add('turned');
+    leaving.classList.remove('current', 'parked', 'stored', 'turning-back');
+    leaving.classList.add('turning-forward');
 
     currentPage += 1;
     updateChrome();
@@ -115,10 +121,9 @@
     leaving.classList.remove('current');
     leaving.classList.add('next');
 
-    /* Release the previous page from its parked position and let it uncurl
-       downward over the sheet that was current. */
-    arriving.classList.remove('turned', 'parked', 'current', 'next');
-    arriving.classList.add('returning');
+    /* Lower the whole propped page back down onto the pad. */
+    arriving.classList.remove('parked', 'stored', 'current', 'next');
+    arriving.classList.add('turning-back');
     arriving.setAttribute('aria-hidden', 'false');
 
     currentPage -= 1;
