@@ -320,6 +320,27 @@ fieldset label:has(input[type='radio']:checked) {
     margin-top: 12px;
     margin-bottom: 38px;
   }
+
+  /* Sheet IX / liability is another dense portrait page. Do not reserve a
+     blank ruled write-in until Other is actually selected, and keep the
+     navigation clearly above the absolute folio. */
+  .sheet[data-page='8'] .write-in:disabled {
+    display: none;
+  }
+
+  .sheet[data-page='8'] .writein-option {
+    padding-bottom: 6px;
+  }
+
+  .sheet[data-page='8'] .validation {
+    margin-top: 6px;
+  }
+
+  .sheet[data-page='8'] .sheet-actions {
+    top: -28px;
+    margin-top: 10px;
+    margin-bottom: 64px;
+  }
 }
 
 @media (max-width: 440px) {
@@ -398,5 +419,11 @@ fieldset label:has(input[type='radio']:checked) {
     padding-left: 8px;
     padding-right: 8px;
     font-size: .78rem;
+  }
+
+  .sheet[data-page='8'] .sheet-actions {
+    top: -34px;
+    margin-top: 8px;
+    margin-bottom: 70px;
   }
 }
