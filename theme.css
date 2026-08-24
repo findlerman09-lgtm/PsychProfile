@@ -1,0 +1,145 @@
+/* Visual prototype layer: desk, folder, paper contrast, and safe sheet stacking. */
+
+:root {
+  --desk: #2a1b12;
+  --folder: #c2aa73;
+  --folder-deep: #ad925d;
+  --paper: #eee6d2;
+  --paper-back: #e7dec8;
+  --paper-deep: #d8cba9;
+  --ink: #2b261f;
+  --muted: #655a49;
+  --rule: #7d6f58;
+}
+
+/* Dark varnished wood assembled entirely in CSS so there is no image asset to
+   load or cache. The grain is deliberately subtle behind the file. */
+body {
+  background-color: var(--desk);
+  background-image:
+    radial-gradient(ellipse at 50% -12%, rgba(255, 226, 178, .09), transparent 46%),
+    repeating-linear-gradient(90deg,
+      rgba(255,255,255,.012) 0 1px,
+      rgba(0,0,0,.016) 1px 3px,
+      transparent 3px 8px),
+    repeating-linear-gradient(0deg,
+      transparent 0 74px,
+      rgba(13,7,4,.20) 74px 76px,
+      rgba(123,79,43,.10) 76px 77px,
+      transparent 77px 151px),
+    linear-gradient(90deg,
+      #24170f 0%,
+      #382519 20%,
+      #2d1d13 43%,
+      #3b281a 68%,
+      #28180f 100%);
+  background-attachment: fixed;
+}
+
+.file-stage {
+  filter: drop-shadow(0 27px 34px rgba(0,0,0,.42));
+}
+
+/* Warm manila folder, visibly different from the cooler ivory examination sheets. */
+.folder-tab {
+  background:
+    linear-gradient(110deg, rgba(255,255,255,.09), transparent 48%),
+    var(--folder-deep);
+  border-color: #6f5a37;
+  box-shadow: inset 0 1px rgba(255,255,255,.12);
+}
+
+.file-card {
+  overflow: visible;
+  background:
+    linear-gradient(rgba(255,255,255,.065), rgba(255,255,255,.005)),
+    repeating-linear-gradient(0deg, rgba(71,61,45,.022) 0 1px, transparent 1px 4px),
+    var(--folder);
+  border-color: #715f3f;
+  box-shadow:
+    inset 0 0 84px rgba(74,54,28,.13),
+    0 2px 0 rgba(255,255,255,.06);
+}
+
+.file-card::before {
+  border-color: rgba(73,57,34,.23);
+}
+
+.file-card::after {
+  background: radial-gradient(ellipse at center, transparent 50%, rgba(68,47,24,.12));
+}
+
+/* The institutional furniture belongs to the folder, not to the question paper. */
+.seal {
+  box-shadow:
+    inset 0 0 0 8px var(--folder),
+    inset 0 0 0 10px var(--rule);
+}
+
+/* Paper stack is a lighter, slightly cooler stock. */
+.paper-stack {
+  z-index: 1;
+  background: var(--paper-deep);
+  border-color: #8b7d62;
+  box-shadow: 11px 17px 27px rgba(42,32,19,.25);
+}
+
+.paper-stack::before,
+.paper-stack::after {
+  background: #dfd4b8;
+}
+
+.sheet-face {
+  background-color: var(--paper);
+  background-image:
+    repeating-linear-gradient(0deg, rgba(66,53,34,.016) 0 1px, transparent 1px 4px),
+    linear-gradient(95deg, rgba(112,88,50,.035), transparent 15%, rgba(255,255,255,.025) 80%);
+  border-color: #887a61;
+  box-shadow:
+    0 9px 22px rgba(48,34,18,.20),
+    inset 0 0 66px rgba(111,85,47,.065);
+}
+
+.sheet-back {
+  background-color: var(--paper-back) !important;
+  background-image:
+    radial-gradient(ellipse at 46% 20%, rgba(255,255,255,.14), transparent 35%),
+    repeating-linear-gradient(0deg, rgba(66,53,34,.013) 0 1px, transparent 1px 5px),
+    linear-gradient(94deg, rgba(105,82,48,.04), transparent 16%, rgba(255,255,255,.03) 82%, rgba(87,67,38,.04)) !important;
+}
+
+/* Critical stacking rule: only the active page can receive clicks. The previous
+   regression gave .current and .next the same stacking level, so the last DOM
+   page sat invisibly/visibly on top of the real active sheet. */
+.sheet.current {
+  z-index: 30 !important;
+  pointer-events: auto !important;
+}
+
+.sheet.next {
+  z-index: 5 !important;
+  pointer-events: none !important;
+}
+
+.sheet.parked {
+  z-index: 45 !important;
+  pointer-events: none !important;
+}
+
+.sheet.turning-forward,
+.sheet.turning-back {
+  z-index: 60 !important;
+}
+
+.sheet.stored {
+  z-index: 1 !important;
+  pointer-events: none !important;
+}
+
+@media (max-width: 760px) {
+  .seal {
+    box-shadow:
+      inset 0 0 0 5px var(--folder),
+      inset 0 0 0 7px var(--rule);
+  }
+}
