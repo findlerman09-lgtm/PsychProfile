@@ -1,248 +1,160 @@
-/* Paper-motion prototype overrides.
-   Physical model: a legal-pad sheet lifts as one page, flexes slightly at the
-   free edge, and remains substantially flipped above the active sheet. */
+/* Segmented paper-turn prototype.
+   The live survey sheet never performs the 3D flip itself. A temporary visual
+   copy is divided into connected horizontal sections so the loose half can
+   bend while the page still reads as one physical legal-pad sheet. */
 
 :root {
-  --paper-turn-duration: 1120ms;
-  /* 180deg would be completely folded flat behind the pad. 152deg leaves the
-     previous page visibly raised while showing most of its full reverse. */
-  --park-angle: 152deg;
+  --paper-turn-duration: 1280ms;
+  --paper-back-solid: #e5dcc5;
 }
 
-/* The turned page is a physical layer above the fixed institutional furniture. */
 .book-wrap {
-  z-index: 20 !important;
-  overflow: visible;
-  perspective: 2600px !important;
-  perspective-origin: 50% 8% !important;
-  transform-style: preserve-3d;
-  isolation: isolate;
-}
-
-.sheet {
-  transform-origin: top center !important;
+  overflow: visible !important;
+  perspective: 1900px !important;
+  perspective-origin: 50% 7% !important;
   transform-style: preserve-3d !important;
-  overflow: visible;
+}
+
+/* Real survey sheets stay flat. Their back faces are not used for the motion,
+   which removes the browser backface/transparency problem entirely. */
+.sheet {
+  transform: none !important;
+  transform-style: flat !important;
+  filter: none !important;
   transition: none !important;
-  will-change: transform, filter;
-}
-
-/* Every sheet has two real opaque faces. The printed face is on the front;
-   the reverse is deliberately blank aged paper. */
-.sheet-face {
-  backface-visibility: hidden !important;
-  -webkit-backface-visibility: hidden !important;
-}
-
-.sheet-front {
-  transform: rotateX(0deg) !important;
-  opacity: 1 !important;
-}
-
-.sheet-back {
-  display: block !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-  transform: rotateX(180deg) translateZ(1px) !important;
-  background-color: #e3d7b9 !important;
-  background-image:
-    radial-gradient(ellipse at 46% 20%, rgba(255,255,255,.13), transparent 35%),
-    repeating-linear-gradient(0deg, rgba(66,53,34,.014) 0 1px, transparent 1px 5px),
-    linear-gradient(94deg, rgba(105,82,48,.045), transparent 16%, rgba(255,255,255,.03) 82%, rgba(87,67,38,.045)) !important;
-  border: 1px solid #877a60 !important;
-  box-shadow:
-    inset 0 0 72px rgba(111,85,47,.075),
-    inset 0 -24px 34px rgba(94,72,42,.06) !important;
-}
-
-/* No duplicated printing or stamps on the reverse. */
-.reverse-mark {
-  display: none !important;
-}
-
-/* Slight weight at the loose edge: enough to keep it from reading as card,
-   without returning to the travelling-wave effect. */
-.sheet-back::after {
-  content: '';
-  position: absolute;
-  left: 1.2%;
-  right: 1.2%;
-  bottom: -1px;
-  height: 78px;
-  pointer-events: none;
-  border-radius: 0 0 48% 48% / 0 0 16% 16%;
-  background: linear-gradient(to top,
-    rgba(80,60,34,.18) 0%,
-    rgba(173,151,110,.08) 24%,
-    rgba(247,238,209,.07) 56%,
-    transparent 100%);
-  box-shadow: inset 0 -8px 12px rgba(75,55,31,.07);
 }
 
 .sheet.current,
 .sheet.next {
-  z-index: 8;
-  transform: rotateX(0deg) translateZ(0) scaleY(1) !important;
+  transform: none !important;
   filter: none !important;
 }
 
-/* Pages older than the immediately previous sheet are put away. */
 .sheet.stored {
   display: none !important;
 }
 
-/* Final resting position. Most of the full blank reverse is now visible above
-   the current sheet rather than collapsing into a narrow foreshortened strip. */
-.sheet.parked {
-  z-index: 60 !important;
-  transform: rotateX(var(--park-angle)) translateZ(2px) scaleY(.998) !important;
-  transform-origin: top center !important;
-  filter: drop-shadow(0 -22px 22px rgba(35,25,14,.24)) !important;
-  pointer-events: none;
+.sheet > .sheet-back {
+  display: none !important;
 }
 
-.sheet.parked .sheet-back {
+/* Temporary turning-page assembly. */
+.flip-overlay {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  z-index: 90;
+  pointer-events: none;
+  transform-style: preserve-3d;
+  overflow: visible;
+  filter: drop-shadow(0 12px 14px rgba(34, 23, 12, .12));
+}
+
+.flip-overlay.parked {
+  filter: drop-shadow(0 -20px 24px rgba(34, 23, 12, .23));
+}
+
+.flip-strip {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: var(--slice-height);
+  transform-origin: 50% 0;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.flip-strip-face {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform-style: flat;
+}
+
+.flip-strip-front {
+  transform: rotateX(0deg) translateZ(.35px);
+  background: #eee6d2;
+}
+
+/* This is a genuinely separate opaque backside. It contains no cloned front
+   content and starts with a solid color before any texture layers are drawn. */
+.flip-strip-back {
+  transform: rotateX(180deg) translateZ(.7px);
   opacity: 1 !important;
-  background-color: #e3d7b9 !important;
+  background-color: var(--paper-back-solid) !important;
+  background-image:
+    repeating-linear-gradient(0deg,
+      rgba(67, 54, 35, .014) 0 1px,
+      transparent 1px 5px),
+    linear-gradient(90deg,
+      rgba(93, 70, 39, .035),
+      rgba(255,255,255,.025) 48%,
+      rgba(86, 64, 36, .035)) !important;
+  box-shadow:
+    inset 0 5px 12px rgba(255,255,255,.055),
+    inset 0 -6px 12px rgba(75,54,29,.055);
 }
 
-/* Forward motion is a single-sheet lift. The whole page moves together; only
-   the loose edge flexes slightly. */
-.sheet.turning-forward {
-  z-index: 70 !important;
-  animation: legal-page-up var(--paper-turn-duration) cubic-bezier(.48,.02,.22,1) both;
-  pointer-events: none;
+/* Each front slice contains a complete visual copy of the source page shifted
+   upward so only its assigned horizontal band is visible. */
+.flip-full-face {
+  position: absolute !important;
+  inset: auto !important;
+  left: 0 !important;
+  top: calc(-1 * var(--slice-top)) !important;
+  width: 100% !important;
+  height: var(--page-height) !important;
+  min-height: var(--page-height) !important;
+  margin: 0 !important;
+  transform: none !important;
+  opacity: 1 !important;
+  pointer-events: none !important;
+  backface-visibility: visible !important;
+  -webkit-backface-visibility: visible !important;
 }
 
-.sheet.turning-back {
-  z-index: 70 !important;
-  animation: legal-page-down var(--paper-turn-duration) cubic-bezier(.48,.02,.22,1) both;
+.flip-full-face input,
+.flip-full-face button,
+.flip-full-face textarea,
+.flip-full-face select {
+  pointer-events: none !important;
 }
 
-@keyframes legal-page-up {
-  0% {
-    transform: rotateX(0deg) translateZ(0) scaleY(1);
-    filter: drop-shadow(0 8px 10px rgba(35,25,14,.08));
-  }
-  12% {
-    transform: rotateX(10deg) translateZ(8px) scaleY(.999);
-    filter: drop-shadow(0 12px 13px rgba(35,25,14,.11));
-  }
-  30% {
-    transform: rotateX(34deg) translateZ(25px) scaleY(.995);
-    filter: drop-shadow(0 21px 18px rgba(35,25,14,.15));
-  }
-  49% {
-    transform: rotateX(67deg) translateZ(40px) scaleY(.989);
-    filter: drop-shadow(0 30px 23px rgba(35,25,14,.19));
-  }
-  65% {
-    transform: rotateX(96deg) translateZ(38px) scaleY(.986);
-    filter: drop-shadow(0 10px 24px rgba(35,25,14,.22));
-  }
-  80% {
-    transform: rotateX(125deg) translateZ(25px) scaleY(.991);
-    filter: drop-shadow(0 -12px 22px rgba(35,25,14,.23));
-  }
-  92% {
-    transform: rotateX(144deg) translateZ(10px) scaleY(.996);
-    filter: drop-shadow(0 -19px 22px rgba(35,25,14,.24));
-  }
-  100% {
-    transform: rotateX(var(--park-angle)) translateZ(2px) scaleY(.998);
-    filter: drop-shadow(0 -22px 22px rgba(35,25,14,.24));
-  }
-}
-
-@keyframes legal-page-down {
-  0% {
-    transform: rotateX(var(--park-angle)) translateZ(2px) scaleY(.998);
-    filter: drop-shadow(0 -22px 22px rgba(35,25,14,.24));
-  }
-  12% {
-    transform: rotateX(144deg) translateZ(10px) scaleY(.996);
-    filter: drop-shadow(0 -19px 22px rgba(35,25,14,.24));
-  }
-  27% {
-    transform: rotateX(125deg) translateZ(25px) scaleY(.991);
-    filter: drop-shadow(0 -12px 22px rgba(35,25,14,.23));
-  }
-  43% {
-    transform: rotateX(96deg) translateZ(38px) scaleY(.986);
-    filter: drop-shadow(0 10px 24px rgba(35,25,14,.22));
-  }
-  61% {
-    transform: rotateX(67deg) translateZ(40px) scaleY(.989);
-    filter: drop-shadow(0 30px 23px rgba(35,25,14,.19));
-  }
-  79% {
-    transform: rotateX(34deg) translateZ(25px) scaleY(.995);
-    filter: drop-shadow(0 21px 18px rgba(35,25,14,.15));
-  }
-  92% {
-    transform: rotateX(10deg) translateZ(8px) scaleY(.999);
-    filter: drop-shadow(0 12px 13px rgba(35,25,14,.11));
-  }
-  100% {
-    transform: rotateX(0deg) translateZ(0) scaleY(1);
-    filter: drop-shadow(0 8px 10px rgba(35,25,14,.08));
-  }
-}
-
-/* Broad loose-edge flex. This moves with the sheet; it is not a wave travelling
-   up the page. */
-.sheet.turning-forward .sheet-front::after,
-.sheet.turning-back .sheet-front::after {
+/* A faint line of weight follows the loose edge of the final section. It is
+   attached to the paper instead of travelling through the sheet. */
+.flip-strip:last-child .flip-strip-front::after,
+.flip-strip:last-child .flip-strip-back::after {
   content: '';
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
-  height: 26%;
-  pointer-events: none;
+  height: 18px;
   background: linear-gradient(to top,
-    rgba(75,55,31,.13) 0%,
-    rgba(229,216,181,.07) 30%,
-    rgba(255,249,226,.14) 56%,
-    transparent 84%);
-  transform-origin: bottom center;
-  animation: free-edge-flex var(--paper-turn-duration) ease-in-out both;
+    rgba(71, 51, 27, .19),
+    rgba(199, 180, 140, .08) 42%,
+    transparent);
+  box-shadow: 0 7px 12px rgba(34, 23, 12, .13);
 }
 
-.sheet.turning-back .sheet-front::after {
-  animation-direction: reverse;
-}
-
-@keyframes free-edge-flex {
-  0%, 100% { opacity: .12; transform: scaleY(.96); }
-  38% { opacity: .46; transform: scaleY(1.05); }
-  64% { opacity: .58; transform: scaleY(1.08); }
-  84% { opacity: .30; transform: scaleY(1.01); }
+/* Very small overlaps hide one-pixel seams between independently transformed
+   paper sections without making the page look corrugated. */
+.flip-strip:not(:last-child) .flip-strip-face {
+  bottom: -1.25px;
 }
 
 @media (max-width: 760px) {
-  :root { --park-angle: 148deg; }
-  .book-wrap { perspective: 2200px !important; }
+  .book-wrap {
+    perspective: 1550px !important;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .sheet.turning-forward,
-  .sheet.parked {
-    animation: none !important;
-    transform: rotateX(var(--park-angle)) translateZ(2px) scaleY(.998) !important;
-    filter: none !important;
-  }
-
-  .sheet.turning-back,
-  .sheet.current,
-  .sheet.next {
-    animation: none !important;
-    transform: rotateX(0deg) translateZ(0) scaleY(1) !important;
-    filter: none !important;
-  }
-
-  .sheet.turning-forward .sheet-front::after,
-  .sheet.turning-back .sheet-front::after {
-    display: none !important;
+  .flip-overlay {
+    transition: none !important;
   }
 }
