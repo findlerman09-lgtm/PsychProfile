@@ -270,7 +270,16 @@ fieldset label:has(input[type='radio']:checked) {
     padding-bottom: 102px !important;
   }
 
+  /* Give the absolute folio and the flow-positioned navigation separate lanes.
+     A small opposing shift is enough to prevent dense mobile pages from letting
+     labels such as “Sheet VI” sit on top of the buttons. */
+  .folio {
+    bottom: 9px !important;
+  }
+
   .sheet-actions {
+    position: relative;
+    top: -9px;
     margin-bottom: 46px;
   }
 
@@ -335,7 +344,12 @@ fieldset label:has(input[type='radio']:checked) {
     font-size: .84rem;
   }
 
+  .folio {
+    bottom: 7px !important;
+  }
+
   .sheet-actions {
+    top: -11px;
     margin-bottom: 52px;
   }
 
