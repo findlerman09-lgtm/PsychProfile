@@ -271,6 +271,83 @@ fieldset label:has(input[type='radio']:checked) {
     margin-top: 12px;
     margin-bottom: 40px;
   }
+
+  /* Inquiry VII is unusually dense: twelve standard responses plus an Other
+     write-in. In portrait, keep the approved content intact but compress only
+     this sheet so its answer list and navigation stay inside the paper. */
+  .sheet[data-page='7'] .sheet-front {
+    padding-top: 34px !important;
+    padding-left: 18px;
+    padding-right: 18px;
+    padding-bottom: 90px !important;
+  }
+
+  .sheet[data-page='7'] .form-code,
+  .sheet[data-page='7'] .question-number {
+    margin-bottom: 9px;
+  }
+
+  .sheet[data-page='7'] h2 {
+    margin-bottom: 10px;
+    font-size: 1.48rem;
+    line-height: 1.08;
+  }
+
+  .sheet[data-page='7'] .prompt {
+    margin-top: 0;
+    margin-bottom: 8px;
+    line-height: 1.35;
+  }
+
+  .sheet[data-page='7'] fieldset {
+    gap: 3px;
+    margin-top: 10px;
+  }
+
+  .sheet[data-page='7'] fieldset > label {
+    min-height: 31px;
+    padding: 5px 7px;
+    font-size: .82rem;
+    line-height: 1.18;
+  }
+
+  .sheet[data-page='7'] .choice-line {
+    gap: 8px;
+  }
+
+  .sheet[data-page='7'] .writein-option {
+    padding-bottom: 5px;
+  }
+
+  .sheet[data-page='7'] .write-in {
+    min-height: 25px;
+    margin-top: 1px;
+    margin-left: 28px;
+    width: calc(100% - 28px);
+    padding-top: 2px;
+    padding-bottom: 2px;
+  }
+
+  .sheet[data-page='7'] .validation {
+    min-height: 16px;
+    margin-top: 5px;
+    font-size: .78rem;
+  }
+
+  .sheet[data-page='7'] .sheet-actions {
+    flex-wrap: nowrap;
+    gap: 8px;
+    margin-top: 8px;
+    margin-bottom: 34px;
+  }
+
+  .sheet[data-page='7'] .sheet-actions button {
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 40px;
+    padding: 7px 8px;
+    font-size: .80rem;
+  }
 }
 
 @media (max-width: 440px) {
@@ -288,5 +365,37 @@ fieldset label:has(input[type='radio']:checked) {
 
   .sheet[data-page='3'] fieldset > label {
     font-size: .80rem;
+  }
+
+  .sheet[data-page='7'] .sheet-front {
+    padding-top: 28px !important;
+    padding-left: 14px;
+    padding-right: 14px;
+    padding-bottom: 84px !important;
+  }
+
+  .sheet[data-page='7'] h2 {
+    font-size: 1.32rem;
+  }
+
+  .sheet[data-page='7'] fieldset > label {
+    min-height: 29px;
+    padding: 4px 6px;
+    font-size: .76rem;
+  }
+
+  .sheet[data-page='7'] input[type='radio'] {
+    width: 18px;
+    height: 18px;
+    flex-basis: 18px;
+  }
+
+  .sheet[data-page='7'] .sheet-actions {
+    margin-bottom: 30px;
+  }
+
+  .sheet[data-page='7'] .sheet-actions button {
+    font-size: .74rem;
+    letter-spacing: .01em;
   }
 }
