@@ -1,0 +1,84 @@
+/* Local review/export controls. Kept separate from the approved survey layout. */
+
+.subject-line {
+  vertical-align: bottom;
+}
+
+.subject-input {
+  width: 100%;
+  min-width: 150px;
+  padding: 0 2px 2px;
+  color: var(--ink);
+  background: transparent;
+  border: 0;
+  outline: 0;
+  font: inherit;
+  letter-spacing: .02em;
+}
+
+.subject-input::placeholder {
+  color: rgba(90, 76, 55, .55);
+  font-style: italic;
+}
+
+.subject-input:focus {
+  box-shadow: 0 2px 0 rgba(78, 61, 39, .35);
+}
+
+.export-panel {
+  margin: 22px 0 8px;
+  padding: 16px 18px 12px;
+  border-top: 1px solid rgba(96,81,57,.48);
+  border-bottom: 1px solid rgba(96,81,57,.48);
+}
+
+.export-note {
+  margin: 0 0 12px;
+  color: var(--muted);
+  font-size: .92rem;
+  font-style: italic;
+}
+
+.export-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.export-actions button {
+  flex: 1 1 180px;
+}
+
+.export-status {
+  min-height: 22px;
+  margin: 9px 0 0;
+  color: var(--muted);
+  font-size: .84rem;
+  font-style: italic;
+}
+
+.completion-sheet .export-panel + .sheet-actions {
+  margin-top: 18px;
+}
+
+@media (max-width: 760px) {
+  .file-meta > span:nth-child(2) {
+    display: block !important;
+    grid-column: 1 / -1;
+  }
+
+  .subject-line {
+    display: inline-block;
+    width: min(260px, calc(100% - 72px));
+    min-width: 0;
+  }
+
+  .export-panel {
+    margin-top: 16px;
+    padding: 13px 12px 10px;
+  }
+
+  .export-actions button {
+    flex-basis: 140px;
+  }
+}
