@@ -108,6 +108,13 @@
     if (root.id) root.removeAttribute('id');
     root.querySelectorAll('[id]').forEach(node => node.removeAttribute('id'));
     root.querySelectorAll('[for]').forEach(node => node.removeAttribute('for'));
+
+    /* Flip-strip copies are visual only. In particular, cloned radio controls
+       must not keep their live form names: once those clones are inserted into
+       the document, matching names make them members of the real radio group
+       and can clear the subject's selected answer. */
+    root.querySelectorAll('input[name], textarea[name], select[name], button[name]')
+      .forEach(control => control.removeAttribute('name'));
   }
 
   function createFlipOverlay(sourceSheet) {
